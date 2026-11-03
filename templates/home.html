@@ -1,46 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <title>Login page</title>
-        <link rel = "StyleSheet" href = "../styles/styles.css">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Albums | Shopping Cart</title>
+        <link rel="stylesheet" href="../styles/styles.css">
     </head>
-    <body>
-        <nav>
-            <div>
-                HOME
-            </div>
-            <div>
-                picture
-            </div>
-            <div>
-                about
-            </div>
-        </nav>
-        <h1 style = "text-align:center">Albums</h1>
-        <hr>
-        <div class = "Search Bar">
-            <div>
-                <input type = "text" placeholder = "Search album by title" class = "form-search">
-            </div>
-            <div>
-                
-            </div>
-        </div>
-        <div class = "container">
-            <div class = "cell">
-                <div class = "album">
-                    <img src = "https://destiny.wiki.gallery/images/5/56/ZavalaGhost.png">
+    <body class="home-page">
+        <header class="home-header">
+            <nav class="home-nav">
+                <a class="home-brand" href="home.html">Record Shop</a>
+                <div class="home-nav-links">
+                    <a href="home.html">Albums</a>
                 </div>
-                <div>
-                    <p class = "albumName"><strong>Title</strong>: illmatic</p>
-                    <p>
-                        freshman album by legendary rapper nas.
-                    </p>
+            </nav>
+        </header>
+
+        <div class="home-main">
+            <div class="album-section" aria-labelledby="albums-heading">
+                <div class="album-section-header">
+                    <div>
+                        <p class="eyebrow">Find your next favorite</p>
+                        <h1>Browse albums</h1>
+                    </div>
+                    <div class="album-search">
+                        <label class="visually-hidden" for="album-search">Search albums by title</label>
+                        <input
+                            id="album-search"
+                            type="search"
+                            name="title"
+                            placeholder="Search albums by title"
+                        >
+                    </div>
                 </div>
-                <div class = "albumDetails">
-                    <a href = "details.html" class = "btn">View Details</a>
+
+                <div class="album-grid">
+                    <article class="album-card">
+                        <a class="album-cover-link" href="details.html" aria-label="View Illmatic details">
+                            <img
+                                class="album-cover"
+                                src="https://m.media-amazon.com/images/I/51cyOjw5duL._AC_UL450_SY450_QL70_.jpg"
+                                alt="Illmatic album cover"
+                            >
+                        </a>
+                        <div class="album-card-content">
+                            <div>
+                                <h2 class="album-title">Illmatic</h2>
+                                <p class="album-artist">Nas</p>
+                                <p class="album-description">
+                                    The debut album from legendary rapper Nas.
+                                </p>
+                            </div>
+                            <a class="album-card-link" href="details.html">View details</a>
+                        </div>
+                    </article>
                 </div>
             </div>
+
+            <footer class="home-footer" id="about">
+                <p>albums!</p>
+            </footer>
         </div>
     </body>
 </html>
