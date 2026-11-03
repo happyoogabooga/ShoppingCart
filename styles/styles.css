@@ -1,0 +1,170 @@
+/*nav*/
+nav{
+    background: #000000;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 40px;
+}
+nav a{
+    font-weight:bold;
+}
+body{
+    background-color: #f4f6f9;
+    margin: 0;
+}
+header {
+    background: white;
+    color: #000000;
+    text-align: center;
+    padding: 25px;
+}
+
+header h1 {
+    margin-bottom: 8px;
+}
+
+.logo{
+    font-size:xx-large;
+    color:white;
+}
+.navbar{
+    display:flex;
+    width:100%;
+    align-items:center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.navbar ul{
+    margin:0;
+    padding:0;
+    list-style:none;
+    display:flex;
+    justify-content:center;
+    flex:1;
+}
+li{
+    display:inline-block;
+    padding-left:20px;
+    padding-right:20px;
+}
+a, a:visited, a:hover, a:active {
+    text-decoration: none;
+}
+/*end of nav section*/
+/*profile*/
+.card{
+    margin: 10px 30px 10px;
+    width:80%;
+    display:block;
+    margin-right:auto;
+    margin-left:auto;
+}
+.cardBody{
+    display:block;
+    background-color:#eee;
+    padding-bottom: 10px;
+    padding-right: 10px;
+    padding-left:10px;
+    border-bottom-left-radius:10px;
+    border-bottom-right-radius: 10px;
+}
+.card_body_grid{
+    padding: 10px 10px 10px;
+    font-size:larger;
+    display:grid;
+    grid-template-columns: auto auto;
+    row-gap:50px;
+    margin-bottom:10px;
+    background-color:white;
+    border-radius:10px;
+}
+.btn_outline{
+    display:block;
+    background-color:white;
+    padding: 10px 5px 10px;
+    border-radius:5px;
+    border: 1px solid black;
+    color:black;
+}
+.btn_outline:hover{
+    cursor:pointer;
+    box-shadow: 5px 10px;
+}
+.cardHead{
+    background-color: #000000;
+    color:white;
+    padding: 5px 10px 5px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    text-align:center;
+}
+.formstyle{
+    display:block;
+    margin-bottom: 16px;
+}
+
+.formLabel,
+.formcontrol{
+    display:block;
+}
+.formSubmit{
+    padding: 10px 5px 10px;
+    border-radius:5px;
+}
+.formSubmit:hover{
+    background-color:white;
+    cursor:pointer;
+}
+.formLabel{
+    font-size:larger;
+}
+.formcontrol{
+    width:90%;
+    padding: 10px 5px 10px;
+    border-radius:5px;
+}
+/*album things under here */
+.album img{
+    width:200px;
+    padding: 20px;
+    border-radius:25px;
+}
+.container{
+    width: 100%;
+    display:flex;
+    gap:5px;
+    justify-content: left;
+    flex-wrap: wrap;
+}
+
+.cell {
+    width: 320px;
+    min-width: 280px;
+    box-sizing: border-box;
+    border-radius:25px;
+    display:flex;
+    flex-direction:column;
+    align-items: center;
+    text-align: center;
+    background-color: lightgrey;
+    padding-bottom: 10px;
+}
+
+.albumName{
+    display: inline-block;
+    padding:6px 12px;
+    background-color:darkgrey;
+    border-radius: 15px;
+    margin-top: 8px;
+}
+
+.albumDetails{
+    align-items:flex-end;
+    border-radius:25px;
+    width:90%;
+    text-align:middle;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:auto;
+}

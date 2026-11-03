@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Login page</title>
+        <link rel = "StyleSheet" href = "../styles/styles.css">
+    </head>
+    <body>
+        <nav>
+            <div>
+                HOME
+            </div>
+            <div>
+                picture
+            </div>
+            <div>
+                about
+            </div>
+        </nav>
+        <!-- below is the conatiner for the banner and the password input -->
+        <div>
+            <div class = "container"> 
+                <!-- This is the username/password card(yes cards are back) -->
+                <div class = "card">
+                    <!--This is the head for the card, probably the only text here will be "login"-->
+                    <div class = "cardHead">
+                        <h2> Login </h2>
+                    </div>
+                    <div class = "cardBody">
+                        <form id = "studentLogin" action="/account/login" method="POST">
+                            <div class = "formstyle">
+                                <label for = "email" class = "formLabel">Email*</label>
+                                <input type = "text" id = "studentEmail" required class = "formcontrol" placeholder = "e.g., jerry.moyer@gmail.com" name = "email">
+                                <small>Please provide your <small style = "color:red; font-size:small">email</small></small>
+                            </div>
+                            <div class = "formstyle">
+                                <label for = "password" class = "formLabel">Password*</label>
+                                <input type = "password" id = "studentPassword" required class = "formcontrol" name = "password">
+                            </div>
+                            <div class = "formstyle">
+                                <input type = "submit" class = "formSubmit" value="Continue">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
