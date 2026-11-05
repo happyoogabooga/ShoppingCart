@@ -4,18 +4,45 @@
         <link rel = "StyleSheet" href = "../styles/styles.css">
         <title>details</title>
     </head>
-    <body>
-        <nav>
-            <div>
-                HOME
+    <body class="details-page">
+        <header class="home-header">
+            <nav class="home-nav" aria-label="Main navigation">
+                <a class="home-brand" href="home.html">Record Shop</a>
+                <div class="home-nav-links">
+                    <a href="home.html" aria-current="page">Albums</a>
+                </div>
+                <div class = "home-nav-links">
+                    <a href ="dashboard.html">Dashboard</a>
+                </div>
+            </nav>
+        </header>
+        <!--this will most likely be the container-->
+        <div class = "container">
+            <div style = "display:block">
+                <!--the album cover and name go on this line-->
+                <div style = "display:flex">
+                    <div class = "album">
+                        <img src = "https://m.media-amazon.com/images/I/51cyOjw5duL._AC_UL450_SY450_QL70_.jpg">
+                        <p style = "padding:20px">price: 18.99</p>
+                    </div>
+                    <div>
+                        <h1>
+                            Title: illmatic
+                        </h1>
+                    </div>
+                </div>
+                <!--description of the album goes here-->
+                <div class = "albumDetails">
+                    illmatic is the freshman album of legendary rapper nas.
+                </div>
+                <div>
+                    <p> providedby: </p>
+                </div>
+                <!--checkout the album here-->
+                <div class="checkout-bar">
+                    <a href = "checkout.html">add to cart</a>
+                </div>
             </div>
-            <div>
-                picture
-            </div>
-            <div>
-                about
-            </div>
-        </nav>  
-              
+        </div>
     </body>
 </html>
