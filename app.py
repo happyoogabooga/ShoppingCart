@@ -1,6 +1,6 @@
 from flask import Flask
 from db import init_app
-from src.album.routes import album_bp
+from routes import album_bp
 import os
 
 

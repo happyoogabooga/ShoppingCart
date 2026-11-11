@@ -32,8 +32,8 @@ class albumRepository:
             for row in rows
         ]
         return albums
-
-    def uploadAlbum(self, title, artist, price):
+#note, this is a terrible thing to test on, something that doesnt require a foreign key would be better
+    def uploadAlbum(self, SKU, title, description, artist, price):
         with self.conn.cursor() as cur:
             cur.execute(
                 "INSERT INTO album (title, artist, price) VALUES (%s, %s, %s) RETURNING id, title, artist, price;",
