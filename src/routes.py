@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
-from . import albumService
-from ..user import userService
+from album import albumService
+from user import userService
 
 album_bp = Blueprint("albums", __name__, url_prefix="/api/albums")
 
