@@ -13,4 +13,3 @@ class cartService:
 
     def getCartById(self, cart_id):
         return self.cartRepository.getCartById(cart_id)
-    
