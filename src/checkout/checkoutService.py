@@ -12,3 +12,9 @@ class checkoutService:
 
     def getCheckoutsByUserId(self, user_id):
         return self.checkoutRepository.getCheckoutsByUserId(user_id)
+
+    def updateCheckout(self, order_number, user_id, total_amount, cart_id):
+        return self.updateCheckout(order_number, user_id, total_amount, cart_id)
+
+    def deleteCheckout(self, order_number):
+        return self.deleteCheckout(order_number)

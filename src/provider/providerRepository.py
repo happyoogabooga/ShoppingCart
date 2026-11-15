@@ -41,12 +41,19 @@ class providerRepository:
         }
         return provider
 
+    def deleteProvider(self, provider_id):
+        with self.conn.cursor() as cur:
+            cur.execute("DELETE FROM provider WHERE provider_id = %s",
+                        (provider_id))
+            row = cur.fetchone()
+        provider = {
+            "provider_id":row[0], "username":row[1], "password":row[2], "name":row[3]
+        }
+        return provider
+    
     def getProviders(self):
         with self.conn.cursor() as cur:
             cur.execute("SELECT * FROM provider")
             rows = cur.fetchall()
         provider = [{"provider_id":row[0], "username":row[1], "password":row[2], "name":row[3]} for row in rows]
         return provider
-    #this makes a whole nother problem with keeping persistance between albums and the provider as, if the provider is deleted, the albums associated with that provider should also be deleted
-    #!!!!!!!!!!MAKE SURE TO TAKE CARE OF THIS ISSUE IN THE SERVICE!!!!!!!!
-    #def deleteProvidor()

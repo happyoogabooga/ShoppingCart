@@ -16,3 +16,10 @@ class albumlistingsService:
 
     def makeAlbumListing(self, album_id, provider_id, price, quantity):
         return self.makeAlbumListing(album_id, provider_id, price, quantity)
+
+    def deleteAlbumListing(self, sku):
+        return self.deleteAlbumListing(sku)
+
+    def updateAlbumListing(self, sku, album_id, provider_id, price, quantity):
+        return self.updateAlbumListing(sku, album_id, provider_id, price, quantity)
+    

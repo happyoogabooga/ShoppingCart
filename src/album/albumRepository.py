@@ -23,7 +23,7 @@ class albumRepository:
     
     def findAlbumByName(self, name):
         with self.conn.cursor() as cur:
-            cur.execute("SELECT * FROM album WHERE title like 'name%' ")
+            cur.execute("SELECT * FROM album WHERE title like '%s%' ", (name))
             rows = cur.fetchall()
         albums = [
             {"album_id": row[0], "title": row[1], "description": row[2], "image": row[3], "artist": row[4]}
@@ -57,3 +57,20 @@ class albumRepository:
             "artist": row[2],
             "price": row[3]
         }
+
+    def updateAlbum(self, album_id, title, description, image, artist):
+        with self.conn.execute() as cur:
+            cur.execute(
+                "UPDATE album set title = %s, description = %s, image = %s, artist = %s WHERE album_id = %s",
+                (title, description, image, artist, album_id)
+            )
+            row = cur.fetchone()
+        album = {"album_id": row[0], "title": row[1], "description": row[2], "image": row[3], "artist": row[4]}
+        return album
+
+    def removeAlbum(self, album_id):
+        with self.conn.execute() as cur:
+            cur.execute("DELETE FROM album WHERE album_id = %s", (album_id))
+            row = cur.fetchone()
+        album = {"album_id": row[0], "title": row[1], "description": row[2], "image": row[3], "artist": row[4]}
+        return album

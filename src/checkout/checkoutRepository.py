@@ -37,3 +37,27 @@ class checkoutRepository:
             }
             for row in rows
         ]
+
+    def updateCheckout(self, order_number, user_id, total_amount, cart_id):
+        with self.conn.cursor() as cur:
+            cur.execute(
+                "UPDATE checkout set user_id = %s, total_amount = %s, cart_id = %s WHERE order_number = %s",
+                (user_id, total_amount, cart_id, order_number)
+            )
+            row = cur.fetchone()
+        checkout = {
+            "order_number": row[0], "user_id": row[1], "total_amount": row[2], "cart_id": row[3]
+        }
+        return checkout
+
+    def deleteCheckout(self, order_number):
+        with self.conn.cursor() as cur:
+            cur.exectue(
+                "DELETE FROM checkout WHERE order_number = %s",
+                (order_number)
+            )
+            row = cur.fetchone()
+        checkout = {
+            "order_number": row[0], "user_id": row[1], "total_amount": row[2], "cart_id": row[3]
+        }
+        return checkout

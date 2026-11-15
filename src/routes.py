@@ -12,7 +12,6 @@ provider_bp = Blueprint("providers", __name__, url_prefix="/api/providers")
 cart_bp = Blueprint("carts", __name__, url_prefix="/api/carts")
 checkout_bp = Blueprint("checkouts", __name__, url_prefix="/api/checkouts")
 album_listings_bp = Blueprint("album_listings", __name__, url_prefix="/api/album-listings")
-legacy_bp = Blueprint("legacy_album_routes", __name__, url_prefix="/api/albums")
 
 api_blueprints = (
     album_bp,
@@ -21,11 +20,8 @@ api_blueprints = (
     cart_bp,
     checkout_bp,
     album_listings_bp,
-    legacy_bp,
 )
-
 @checkout_bp.get("/")
-@legacy_bp.get("/checkout")
 def get_checkouts():
     user_id = request.args.get("user_id", type=int)
     cart_id = request.args.get("cart_id", type=int)
@@ -41,7 +37,6 @@ def get_checkouts():
     return jsonify(checkouts), 200
 
 @checkout_bp.post("/")
-@legacy_bp.post("/checkout")
 def post_checkout():
     data = request.get_json()
     if not isinstance(data, dict):
@@ -58,13 +53,11 @@ def post_checkout():
     return jsonify(checkout), 201
 
 @cart_bp.get("/")
-@legacy_bp.get("/cart")
 def get_cart():
     cart = cartService.cartService().makeCart()
     return jsonify(cart), 200
 
 @cart_bp.post("/")
-@legacy_bp.post("/cart")
 def post_cart():
     data = request.get_json()
     if not isinstance(data, dict):
@@ -81,13 +74,11 @@ def post_cart():
     return jsonify(cart), 201
 
 @album_listings_bp.get("/")
-@legacy_bp.get("/albumlistings")
 def get_albumlistings():
     albumlisting = albumlistingsSerivce.albumlistingsService().getAlbumListings()
     return jsonify(albumlisting)
 
 @album_listings_bp.post("/")
-@legacy_bp.post("/albumlistings")
 def post_albumlistings():
     data = request.get_json()
     if not isinstance(data, dict):
@@ -104,13 +95,11 @@ def post_albumlistings():
     albumListing = albumlistingsSerivce.albumlistingsService().makeAlbumListing(album_id, provider_id, price, quantity)
     return jsonify(albumListing), 201
 @provider_bp.get("/")
-@legacy_bp.get("/provider")
 def get_provider():
     provider = providerService.providerService().getProviders()
     return jsonify(provider), 200
 
 @provider_bp.post("/")
-@legacy_bp.post("/provider")
 def post_provider():
     data = request.get_json()
     if not isinstance(data, dict):
@@ -145,13 +134,11 @@ def post_albums():
     album = albumService.AlbumService().makeAlbum(title, description, image, artist)
     return jsonify(album), 201
 @user_bp.get("/")
-@legacy_bp.get("/user")
 def get_users():
     users = userService.userService().getUsers()
     return jsonify(users), 201
 
 @user_bp.post("/")
-@legacy_bp.post("/user")
 def post_user():
     data = request.get_json()
     if not isinstance(data, dict):
