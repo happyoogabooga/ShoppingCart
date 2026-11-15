@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Login page</title>
-        <link rel = "StyleSheet" href = "../styles/styles.css">
+        <link rel = "StyleSheet" href = "../static/styles.css">
     </head>
     <body>
         <nav>
@@ -27,14 +27,16 @@
                     </div>
                     <div class = "cardBody">
                         <form id = "studentLogin" action="/account/login" method="POST">
+                            {% if error %}
+                                <p role="alert">{{ error }}</p>
+                            {% endif %}
                             <div class = "formstyle">
-                                <label for = "email" class = "formLabel">Email*</label>
-                                <input type = "text" id = "studentEmail" required class = "formcontrol" placeholder = "e.g., jerry.moyer@gmail.com" name = "email">
-                                <small>Please provide your <small style = "color:red; font-size:small">email</small></small>
+                                <label for = "username" class = "formLabel">Username*</label>
+                                <input type = "text" id = "username" required class = "formcontrol" name = "username">
                             </div>
                             <div class = "formstyle">
                                 <label for = "password" class = "formLabel">Password*</label>
-                                <input type = "password" id = "studentPassword" required class = "formcontrol" name = "password">
+                                <input type = "password" id = "password" required class = "formcontrol" name = "password">
                             </div>
                             <div class = "formstyle">
                                 <input type = "submit" class = "formSubmit" value="Continue">

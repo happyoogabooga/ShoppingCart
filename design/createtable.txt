@@ -20,23 +20,35 @@ CREATE TABLE album (
     description VARCHAR(255) NOT NULL,
     price DECIMAL(5,2) NOT NULL,
     image VARCHAR(255) NOT NULL,
-    provider_id INT NOT NULL,
-    PRIMARY KEY (SKU),
-    FOREIGN KEY (provider_id) REFERENCES provider(provider_id) ON DELETE CASCADE
+    PRIMARY KEY (SKU)
 );
 
-CREATE TABLE cart (
-    user_id INT NOT NULL,
-    SKU INT NOT NULL,
-    PRIMARY KEY (user_id, SKU),
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (SKU) REFERENCES album(SKU) ON DELETE CASCADE
+CREATE TABLE cart(
+	cart_id serial not null,
+	sku Integer not null,
+	user_id Integer not null,
+	primary key(cart_id),
+	foreign key(sku) references AlbumListings(sku),
+	foreign key(user_id) references users(user_id)
 );
 
 CREATE TABLE checkout (
     order_number SERIAL NOT NULL,
     user_id INT NOT NULL,
     total_amount DECIMAL(8,2),
+    cart_id Integer,
     PRIMARY KEY (order_number),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
+    FOREIGN KEY (cart_id) References cart(cart_id)
+);
+
+CREATE TABLE AlbumListings(
+	sku serial not null,
+	album_id integer not null,
+	provider_id integer not null,
+	price DECIMAL(10, 2) not null,
+	quantity integer not null default 0,
+	primary key(sku),
+	foreign key(album_id) references album(album_id) on delete cascade,
+	foreign key(provider_id) references provider(provider_id) on delete cascade
 );

@@ -13,7 +13,18 @@ class AlbumService:
         return self.album_repository.findAlbumByArtist(name=name)
 
     def findBytitle(self, title):
-        return self.album_repository.findAlbumByName(name=title)
+        return self.album_repository.findAlbumByName(title)
 
-    def postAlbum(self, title, artist, price):
-        return self.album_repository.uploadAlbum(title, artist, price)
+    def makeAlbum(self, title, description, image, artist):
+        return self.album_repository.makeAlbum(title, description, image, artist)
+    
+    def getAlbumById(self, id):
+        return self.album_repository.getAlbumById(id)
+
+    def updateAlbum(self, album_id, title, description, image, artist):
+        return self.album_repository.updateAlbum(
+            album_id, title, description, image, artist
+        )
+
+    def removeAlbum(self, album_id):
+        return self.album_repository.removeAlbum(album_id)

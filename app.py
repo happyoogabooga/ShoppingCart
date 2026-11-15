@@ -1,6 +1,6 @@
 from flask import Flask
 from db import init_app
-from src.album.routes import album_bp
+from src.routes import api_blueprints, ui_blueprints
 import os
 
 
@@ -18,9 +18,12 @@ def load_env_file():
 
 app = Flask(__name__)
 init_app(app)
-app.register_blueprint(album_bp)
+for blueprint in api_blueprints:
+    app.register_blueprint(blueprint)
 load_env_file()
 
 app.config["DATABASE_URL"] = os.getenv("DB_ENCRYPTION_KEY")
+for blueprint in ui_blueprints:
+    app.register_blueprint(blueprint)
 if __name__ == "__main__":
     app.run(debug=True, port=5001)
