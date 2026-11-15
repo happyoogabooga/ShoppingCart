@@ -20,11 +20,20 @@ class checkoutRepository:
         }
         return checkout
     
-    def getCheckoutByUserId(self, user_id):
+    def getCheckoutsByUserId(self, user_id):
         with self.conn.cursor() as cur:
-            cur.execute("SELECT * FROM checkout WHERE user_id = %s", (user_id))
-            row = cur.fetchone
-        checkout = {
-            "order_number": row[0], "user_id": row[1], "total_amount": row[2], "cart_id": row[3]
-        }
-        return checkout
+            cur.execute(
+                "SELECT order_number, user_id, total_amount, cart_id "
+                "FROM checkout WHERE user_id = %s ORDER BY order_number",
+                (user_id,),
+            )
+            rows = cur.fetchall()
+        return [
+            {
+                "order_number": row[0],
+                "user_id": row[1],
+                "total_amount": row[2],
+                "cart_id": row[3],
+            }
+            for row in rows
+        ]
