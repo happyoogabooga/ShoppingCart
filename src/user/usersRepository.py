@@ -17,6 +17,22 @@ class usersRepository:
             "location": row[2],
         }
 
+    def findUserByCredentials(self, username, password):
+        with self.conn.cursor() as cur:
+            cur.execute(
+                "SELECT user_id, username, location FROM users "
+                "WHERE username = %s AND password = %s",
+                (username, password),
+            )
+            row = cur.fetchone()
+        if row is None:
+            return None
+        return {
+            "user_id": row[0],
+            "username": row[1],
+            "location": row[2],
+        }
+
     def makeUser(self, username, password, location):
         with self.conn.cursor() as cur:
             cur.execute(

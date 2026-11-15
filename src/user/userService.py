@@ -7,6 +7,9 @@ class userService:
     def getUserById(self, id):
         return self.user_repository.findUserById(id)
 
+    def authenticateUser(self, username, password):
+        return self.user_repository.findUserByCredentials(username, password)
+
     def makeUser(self, username, password, location):
         return self.user_repository.makeUser(username, password, location)
 

@@ -3,7 +3,10 @@ from .albumlistings.albumlistingsController import AlbumListingsController
 from .cart.cartController import CartController
 from .checkout.checkoutController import CheckoutController
 from .provider.providerController import ProviderController
+from .shoppingCartuiController import ui_blueprint
 from .user.userController import UserController
+
+ui_blueprints = (ui_blueprint,)
 
 album_controller = AlbumController()
 user_controller = UserController()
