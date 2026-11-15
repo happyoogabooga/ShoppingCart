@@ -4,36 +4,38 @@ from .albumlistingsSerivce import albumlistingsService as AlbumListingsService
 
 
 class AlbumListingsController:
+    blueprint = Blueprint(
+        "album_listings", __name__, url_prefix="/api/album-listings"
+    )
+
     def __init__(self):
-        self.blueprint = Blueprint(
-            "album_listings", __name__, url_prefix="/api/album-listings"
-        )
-        self.blueprint.add_url_rule(
-            "/", "get_albumlistings", self.get_albumlistings, methods=["GET"]
-        )
-        self.blueprint.add_url_rule(
-            "/", "post_albumlistings", self.post_albumlistings, methods=["POST"]
-        )
+        self.blueprint = type(self).blueprint
 
-    def register_legacy_routes(self, blueprint):
-        blueprint.add_url_rule(
-            "/albumlistings",
-            "get_albumlistings",
-            self.get_albumlistings,
-            methods=["GET"],
-        )
-        blueprint.add_url_rule(
-            "/albumlistings",
-            "post_albumlistings",
-            self.post_albumlistings,
-            methods=["POST"],
-        )
-
-    def get_albumlistings(self):
+    @staticmethod
+    @blueprint.get("/")
+    def get_albumlistings():
         album_listings = AlbumListingsService().getAlbumListings()
-        return jsonify(album_listings)
+        return jsonify(album_listings), 200
 
-    def post_albumlistings(self):
+    @staticmethod
+    @blueprint.get("/provider/<int:provider_id>")
+    def get_albumlistings_by_provider(provider_id):
+        album_listings = AlbumListingsService().getAlbumListingsByProviderid(
+            provider_id
+        )
+        return jsonify(album_listings), 200
+
+    @staticmethod
+    @blueprint.get("/<int:sku>")
+    def get_albumlisting_by_sku(sku):
+        album_listing = AlbumListingsService().getAlbumListingBysku(sku)
+        if album_listing is None:
+            return jsonify(error="Album listing not found"), 404
+        return jsonify(album_listing), 200
+
+    @staticmethod
+    @blueprint.post("/")
+    def post_albumlistings():
         data = request.get_json()
         if not isinstance(data, dict):
             return jsonify(error="Expected a JSON object"), 400
@@ -43,7 +45,12 @@ class AlbumListingsController:
         price = data.get("price")
         quantity = data.get("quantity")
 
-        if not album_id or not provider_id or not price or not quantity:
+        if (
+            album_id is None
+            or provider_id is None
+            or price is None
+            or quantity is None
+        ):
             return jsonify(
                 error="album_id, provider_id, price, and quantity required"
             ), 400
@@ -52,3 +59,39 @@ class AlbumListingsController:
             album_id, provider_id, price, quantity
         )
         return jsonify(album_listing), 201
+
+    @staticmethod
+    @blueprint.put("/<int:sku>")
+    def update_albumlisting(sku):
+        data = request.get_json()
+        if not isinstance(data, dict):
+            return jsonify(error="Expected a JSON object"), 400
+
+        album_id = data.get("album_id")
+        provider_id = data.get("provider_id")
+        price = data.get("price")
+        quantity = data.get("quantity")
+        if (
+            album_id is None
+            or provider_id is None
+            or price is None
+            or quantity is None
+        ):
+            return jsonify(
+                error="album_id, provider_id, price, and quantity are required"
+            ), 400
+
+        album_listing = AlbumListingsService().updateAlbumListing(
+            sku, album_id, provider_id, price, quantity
+        )
+        if album_listing is None:
+            return jsonify(error="Album listing not found"), 404
+        return jsonify(album_listing), 200
+
+    @staticmethod
+    @blueprint.delete("/<int:sku>")
+    def delete_albumlisting(sku):
+        album_listing = AlbumListingsService().deleteAlbumListing(sku)
+        if album_listing is None:
+            return jsonify(error="Album listing not found"), 404
+        return jsonify(album_listing), 200

@@ -14,7 +14,9 @@ class userService:
         return self.user_repository.getUsers()
 
     def updateUser(self, user_id, username, password, location):
-        return self.updateUser(user_id, username, password, location)
+        return self.user_repository.updateUser(
+            user_id, username, password, location
+        )
 
     def deleteUser(self, user_id):
-        return self.deleteUser(user_id)
+        return self.user_repository.deleteUser(user_id)

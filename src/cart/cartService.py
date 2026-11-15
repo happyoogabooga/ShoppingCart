@@ -15,11 +15,11 @@ class cartService:
         return self.cartRepository.getCartById(cart_id)
 
     def getCartByUserId(self, user_id):
-        return self.getCartByUserId(user_id)
+        return self.cartRepository.getCartByUserId(user_id)
 
     def updateCart(self, cart_id, sku, user_id):
-        return self.updateCart(cart_id, sku, user_id)
+        return self.cartRepository.updateCart(cart_id, sku, user_id)
 
     def removeCart(self, cart_id):
-        return self.removeCart(cart_id)
+        return self.cartRepository.deleteCart(cart_id)
     

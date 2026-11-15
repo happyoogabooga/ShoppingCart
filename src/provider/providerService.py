@@ -18,7 +18,7 @@ class providerService:
         return self.providerRepository.updateProvider(id, username, password, name)
 
     def deleteProvider(self, provider_id):
-        return self.deleteProvider(provider_id)
+        return self.providerRepository.deleteProvider(provider_id)
     
     def getProviders(self):
         return self.providerRepository.getProviders()

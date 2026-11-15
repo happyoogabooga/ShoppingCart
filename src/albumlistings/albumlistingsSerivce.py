@@ -3,7 +3,7 @@ from .albumlistingsRepository import albumlistingsRepository
 
 class albumlistingsService:
     def __init__(self):
-        self.albumRepository = albumlistingsRepository(get_db)
+        self.albumRepository = albumlistingsRepository(get_db())
 
     def getAlbumListings(self):
         return self.albumRepository.getAlbumListings()
@@ -12,14 +12,18 @@ class albumlistingsService:
         return self.albumRepository.getAlbumListingBysku(sku)
 
     def getAlbumListingsByProviderid(self, provider_id):
-        return self.getAlbumListingBysku(provider_id)
+        return self.albumRepository.getAlbumListingsByProviderid(provider_id)
 
     def makeAlbumListing(self, album_id, provider_id, price, quantity):
-        return self.makeAlbumListing(album_id, provider_id, price, quantity)
+        return self.albumRepository.makeAlbumListing(
+            album_id, provider_id, price, quantity
+        )
 
     def deleteAlbumListing(self, sku):
-        return self.deleteAlbumListing(sku)
+        return self.albumRepository.deleteAlbumListing(sku)
 
     def updateAlbumListing(self, sku, album_id, provider_id, price, quantity):
-        return self.updateAlbumListing(sku, album_id, provider_id, price, quantity)
+        return self.albumRepository.updateAlbumListing(
+            sku, album_id, provider_id, price, quantity
+        )
     

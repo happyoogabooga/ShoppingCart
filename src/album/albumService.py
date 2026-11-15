@@ -22,7 +22,9 @@ class AlbumService:
         return self.album_repository.getAlbumById(id)
 
     def updateAlbum(self, album_id, title, description, image, artist):
-        return self.updateAlbum(album_id, title, description, image, artist)
+        return self.album_repository.updateAlbum(
+            album_id, title, description, image, artist
+        )
 
     def removeAlbum(self, album_id):
-        return self.removeAlbum(album_id)
+        return self.album_repository.removeAlbum(album_id)
