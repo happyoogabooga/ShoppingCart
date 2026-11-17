@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>albumListing</title>
+        <link rel ="StyleSheet" href = "../static/styles.css">
+        <style>
+            .album-fields {
+                display: block;
+            }
+
+            .album-fields[aria-hidden="true"] {
+                position: absolute;
+                visibility: hidden;
+            }
+        </style>
+    </head>
+    <body>
+        <header class="home-header">
+            <nav class="home-nav" aria-label="Main navigation">
+                <a class="home-brand" href="home.html">Record Shop</a>
+                <div class="home-nav-links">
+                    <a href="home.html" aria-current="page">Albums</a>
+                </div>
+                <div class = "home-nav-links">
+                    <a href ="/account/provider_dashboard">Dashboard</a>
+                </div>
+            </nav>
+        </header>
+        <div class = "container">
+            <div>
+                <h1>New or Old album</h1>
+                <form id="createListing" action="{{ url_for('shopping_cart_ui.create_album_listing') }}" method="POST">
+                    <legend>1. Select Album</legend>
+                    {% if error %}
+                    <p role="alert">{{ error }}</p>
+                    {% endif %}
+
+                    <label>
+                        <input type="radio" name="album_mode" value="existing" checked onclick="toggleAlbumFields(false)">
+                        Choose an existing album
+                    </label>
+                    <label>
+                        <input type="radio" name="album_mode" value="new" onclick="toggleAlbumFields(true)">
+                        Add a new album to the catalog
+                    </label>
+
+                    <!-- Existing Album Dropdown -->
+                    <div id="existing-album-fields" class="album-fields" aria-hidden="false">
+                        <label for="album_id">Album</label>
+                        <select id="album_id" name="album_id">
+                            <option value="">-- Select an album --</option>
+                            {% for album in albums %}
+                            <option value="{{ album.album_id }}">
+                                {{ album.title }}{% if album.artist %} — {{ album.artist }}{% endif %}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- New Album Inputs (Hidden unless "Add a new album" is checked) -->
+                    <div id="new-album-fields" class="album-fields" aria-hidden="true">
+                        <label for="title">Album Title:</label>
+                        <input type="text" id="title" name="title" placeholder="e.g., Illmatic">
+                        <br>
+                        <label for="artist">Artist:</label>
+                        <input type="text" id="artist" name="artist" placeholder="e.g., Nas">
+                        <br>
+                        <label for="description">Description:</label><br>
+                        <textarea id="description" name="description" placeholder="Short description of the album"></textarea>
+                        <br>
+                        <label for="image">Cover Image URL:</label>
+                        <input type="text" id="image" name="image" placeholder="https://...">
+                    </div>
+
+
+                <!-- Listing Price & Stock Quantity -->
+                    <legend>2. Your Listing Details</legend>
+
+                    <label for="price">Price:</label>
+                    <input type="number" id="price" name="price" step="0.01" min="0" required placeholder="24.99">
+                    <br>
+                    <label for="quantity">Stock Quantity:</label>
+                    <input type="number" id="quantity" name="quantity" min="0" required placeholder="10">
+
+                    <div class = "formstyle">
+                        <input type = "submit" class = "formSubmit" value="Continue">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script>
+            function toggleAlbumFields(isNew) {
+                const existingAlbumFields = document.getElementById("existing-album-fields");
+                const newAlbumFields = document.getElementById("new-album-fields");
+
+                if (isNew) {
+                    existingAlbumFields.setAttribute("aria-hidden", "true");
+                    newAlbumFields.setAttribute("aria-hidden", "false");
+                } else {
+                    existingAlbumFields.setAttribute("aria-hidden", "false");
+                    newAlbumFields.setAttribute("aria-hidden", "true");
+                }
+            }
+        </script>
+    </body>
+</html>

@@ -19,6 +19,12 @@
                 <h1>Hello {{ provider.name }}</h1>
             </div>
             <!--split the bottom part of this page into, in progress orders, and orders-->
+            <div>
+                <h1>Creation Menu:</h1>
+                <a href="{{ url_for('shopping_cart_ui.create_album_listing') }}">
+                    make listing
+                </a>
+            </div>
                 <div class = "cart-view">
                     <h1>albums:</h1>
                     <div class="album-grid">
