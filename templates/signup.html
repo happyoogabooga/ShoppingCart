@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Login page</title>
+        <link rel = "StyleSheet" href = "../static/styles.css">
+    </head>
+    <body>
+        <nav>
+            <div>
+                HOME
+            </div>
+            <div>
+                picture
+            </div>
+            <div>
+                about
+            </div>
+        </nav>
+        <!-- below is the conatiner for the banner and the password input -->
+        <div>
+            <div class = "container"> 
+                <!-- This is the username/password card(yes cards are back) -->
+                <div class = "card">
+                    <!--This is the head for the card, probably the only text here will be "login"-->
+                    <div class = "cardHead">
+                        <h2> Login </h2>
+                    </div>
+                    <div class = "cardBody">
+                        <form id = "studentsignup" action="/account/signup" method="POST">
+                            <!--if there is an error show the error-->
+                            {% if error %}
+                                <p role="alert">{{ error }}</p>
+                            {% endif %}
+                            <div class = "formstyle">
+                                <label for = "name" class = "formLabel">name*</label>
+                                <input type = "text" id = "name" required class = "formcontrol" name = "name">
+                            </div>
+                            <div class = "formstyle">
+                                <label for = "username" class = "formLabel">Username*</label>
+                                <input type = "text" id = "username" required class = "formcontrol" name = "username">
+                            </div>
+                            <div class = "formstyle">
+                                <label for = "password" class = "formLabel">Password*</label>
+                                <input type = "password" id = "password" required class = "formcontrol" name = "password">
+                            </div>
+                            <div class = "formstyle">
+                                <label for = "location" class = "formLabel">Location*</label>
+                                <input type = "text" id = "location" required class = "formcontrol" name = "location">
+                            </div>
+                            <div class = "formstyle">
+                                <input type = "radio" id = "user" name = "role" value = "user">
+                                <label for = "user">user</label>
+                                <input type = "radio" id = "provider" name = "role" value = "provider">
+                                <label for = "provider">provider</label>
+                            </div>
+                            <div class = "formstyle">
+                                <input type = "submit" class = "formSubmit" value="Continue">
+                            </div>
+                        </form>
+                    </div>
+                    <small>have an account? <a  href = "/account/login">login</a></small>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

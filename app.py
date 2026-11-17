@@ -21,6 +21,7 @@ init_app(app)
 for blueprint in api_blueprints:
     app.register_blueprint(blueprint)
 load_env_file()
+app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(32)
 
 app.config["DATABASE_URL"] = os.getenv("DB_ENCRYPTION_KEY")
 for blueprint in ui_blueprints:

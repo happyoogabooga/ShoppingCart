@@ -73,3 +73,15 @@ class providerRepository:
             {"provider_id": row[0], "username": row[1], "name": row[2]}
             for row in rows
         ]
+
+    def getProviderByCredentials(self, username, password):
+        with self.conn.cursor() as cur:
+            cur.execute(
+                "SELECT provider_id, username, name FROM provider "
+                "WHERE username = %s AND password = %s",
+                (username, password),
+            )
+            row = cur.fetchone()
+        if row is None:
+            return None
+        return {"provider_id": row[0], "username": row[1], "name": row[2]}

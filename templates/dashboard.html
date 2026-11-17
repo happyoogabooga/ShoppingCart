@@ -10,40 +10,46 @@
                     <a href="home.html" aria-current="page">Albums</a>
                 </div>
                 <div class = "home-nav-links">
-                    <a href ="dashboard.html">Dashboard</a>
+                    <a href ="/account/dashboard">Dashboard</a>
                 </div>
             </nav>
         </header>
         <div class = "dashboard-main">
             <div class = "banner">
-                <h1>Hello name</h1>
+                <h1>Hello {{ user.username }}</h1>
             </div>
             <!--split the bottom part of this page into, in progress orders, and orders-->
             <div class = "cart-container">
                 <div class = "cart-view">
                     <h1>Cart:</h1>
                     <div class="album-grid">
+                    {%for item in cart_item%}
                     <article class="album-card">
                         <a class="album-cover-link" href="details.html" aria-label="View Illmatic details">
                             <img
                                 class="album-cover"
-                                src="https://m.media-amazon.com/images/I/51cyOjw5duL._AC_UL450_SY450_QL70_.jpg"
-                                alt="Illmatic album cover"
+                                src="{{item.image}}"
+                                alt="{{item.title}}"
                             >
                         </a>
                         <div class="album-card-content">
                             <div>
-                                <h2 class="album-title">Illmatic</h2>
-                                <p class="album-artist">Nas</p>
-                                <p class="album-description">
-                                    The debut album from legendary rapper Nas.
-                                </p>
+                                <h2 class="album-title">{{ item.title }}</h2>
+                                <p class="album-artist">{{ item.artist }}</p>
+                                <p class="album-price">${{ "%.2f"|format(item.price) }}</p>
+                                {% if item.provider_name %}
+                                <p class="album-seller">Sold by: {{ item.provider_name }}</p>
+                                {% endif %}
+                                <p class="album-description">{{ item.description }}</p>
                             </div>
-                            <a class="album-card-link" href="details.html">View details</a>
-                            <a class = "remove-item" href ="remove.html">Remove Item</a>
+                            <a class="album-card-link" href="/album/{{ item.sku }}">View details</a>
+                            <a class="remove-item" href="{{ url_for('shopping_cart_ui.remove_from_cart', cart_id=item.cart_id) }}">Remove Item</a>
                         </div>
                     </article>
                     </div>
+                    {%else%}
+                    your cart is empty
+                    {%endfor%}
                 </div>
                 
                 <div class = "cart-view">

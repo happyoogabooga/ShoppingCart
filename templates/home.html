@@ -14,7 +14,7 @@
                     <a href="home.html">Albums</a>
                 </div>
                 <div class = "home-nav-links">
-                    <a href  = "dashboard.html">Dashboard</a>
+                    <a href  = "/account/dashboard">Dashboard</a>
                 </div>
             </nav>
         </header>
@@ -38,6 +38,7 @@
                 </div>
 
                 <div class="album-grid">
+                    {%for albums in album_listings%}
                     <article class="album-card">
                         <a class="album-cover-link" href="details.html" aria-label="View Illmatic details">
                             <img
