@@ -109,8 +109,8 @@ def provider_dashboard():
         return redirect(url_for("shopping_cart_ui.login"))
     
     provider = ProviderService().getProviderById(provider_id)
-
-    return render_template("provider_dashboard.html", provider = provider)
+    albumListing = AlbumListingsService().getAlbumListingsByProviderid(provider_id)
+    return render_template("provider_dashboard.html", provider = provider, albumListing = albumListing)
 
 @ui_blueprint.route("/provider/create_album_listing", methods=["GET", "POST"])
 def create_album_listing():
@@ -174,3 +174,26 @@ def remove_from_cart(cart_id):
 
     CartService().removeCart(cart_id)
     return redirect(url_for("shopping_cart_ui.dashboard"))
+
+@ui_blueprint.route("/user/home", methods = ["GET", "POST"])
+def user_home():
+    albumListings = AlbumListingsService().getAlbumListings()
+    if request.method == "GET":
+        return render_template("home.html", album_listings = albumListings)
+    
+    user_id = session.get("user_id")
+
+@ui_blueprint.route("/album/details/<int:sku>", methods = ["GET", "POST"])
+def album_details(sku):
+    user_id = session.get("user_id")
+
+    listing = AlbumListingsService().getAlbumListingBysku(sku)
+    if listing is None:
+        return "listing not found"
+    provider = ProviderService().getProviderById(listing["provider_id"])
+    return render_template(
+        "details.html",
+        listing=listing,
+        provider = provider
+    )
+

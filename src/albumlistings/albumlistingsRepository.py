@@ -4,46 +4,66 @@ class albumlistingsRepository:
 
     def getAlbumListings(self):
         with self.conn.cursor() as cur:
-            cur.execute("SELECT * FROM albumlistings")
+            cur.execute(
+                "SELECT * "
+                "FROM albumlistings NATURAL JOIN album"
+            )
             rows = cur.fetchall()
-        albumlistings = [{
-            "sku": row[0], "album_id": row[1], "provider_id": row[2], "price": row[3], "quantity": row[4]
-        } for row in rows]
-        return albumlistings
+        return [
+            {
+                "album_id": row[0],
+                "sku": row[1],
+                "provider_id": row[2],
+                "price": row[3],
+                "quantity": row[4],
+                "title": row[5],
+                "description": row[6],
+                "image": row[7],
+                "artist": row[8]
+            }
+            for row in rows
+        ]
 
     def getAlbumListingBysku(self, sku):
         with self.conn.cursor() as cur:
             cur.execute(
-                "SELECT sku, album_id, provider_id, price, quantity "
-                "FROM albumlistings WHERE sku = %s",
-                (sku,),
+                "SELECT * "
+                "FROM albumlistings NATURAL JOIN album WHERE sku = %s",
+                (sku,)
             )
             row = cur.fetchone()
-        if row is None:
-            return None
         return {
-            "sku": row[0],
-            "album_id": row[1],
-            "provider_id": row[2],
-            "price": row[3],
-            "quantity": row[4],
-        }
+                "album_id": row[0],
+                "sku": row[1],
+                "provider_id": row[2],
+                "price": row[3],
+                "quantity": row[4],
+                "title": row[5],
+                "description": row[6],
+                "image": row[7],
+                "artist": row[8]
+            }
+        
         
     def getAlbumListingsByProviderid(self, provider_id):
         with self.conn.cursor() as cur:
             cur.execute(
-                "SELECT sku, album_id, provider_id, price, quantity "
-                "FROM albumlistings WHERE provider_id = %s",
+                "SELECT * "
+                "FROM albumlistings NATURAL JOIN album WHERE provider_id = %s",
                 (provider_id,),
             )
             rows = cur.fetchall()
         return [
             {
-                "sku": row[0],
-                "album_id": row[1],
+                "album_id": row[0],
+                "sku": row[1],
                 "provider_id": row[2],
                 "price": row[3],
                 "quantity": row[4],
+                "title": row[5],
+                "description": row[6],
+                "image": row[7],
+                "artist": row[8]
             }
             for row in rows
         ]

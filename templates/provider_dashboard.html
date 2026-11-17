@@ -46,9 +46,8 @@
                                 <p class="album-seller">Sold by: {{ item.provider_name }}</p>
                                 {% endif %}
                                 <p class="album-description">{{ item.description }}</p>
+                                <p class = "album-Quantity"> {{ item.quantity}}</p>
                             </div>
-                            <a class="album-card-link" href="/album/{{ item.sku }}">View details</a>
-                            <a class="remove-item" href="{{ url_for('shopping_cart_ui.remove_from_cart', cart_id=item.cart_id) }}">Remove Item</a>
                         </div>
                         </article>
                         {%endfor%}
