@@ -33,41 +33,41 @@ class usersRepository:
             "location": row[2],
         }
 
-    def makeUser(self, username, password, location):
+    def makeUser(self, username, password, location, name):
         with self.conn.cursor() as cur:
             cur.execute(
-                "INSERT INTO users (username, password, location) "
-                "VALUES (%s, %s, %s) "
-                "RETURNING user_id, username, location",
-                (username, password, location),
+                "INSERT INTO users (username, password, location, name) "
+                "VALUES (%s, %s, %s, %s) "
+                "RETURNING user_id, username, location, name",
+                (username, password, location, name),
             )
             row = cur.fetchone()
         self.conn.commit()
-        return {"user_id": row[0], "username": row[1], "location": row[2]}
+        return {"user_id": row[0], "username": row[1], "location": row[2], "name": row[3]}
     
     def getUsers(self):
         with self.conn.cursor() as cur:
             cur.execute("SELECT user_id, username, location FROM users")
             rows = cur.fetchall()
         users = [
-            {"user_id": row[0], "username": row[1], "location": row[2]}
+            {"user_id": row[0], "username": row[1], "location": row[2], "name": row[3]}
             for row in rows
         ]
         return users
 
-    def updateUser(self, user_id, username, password, location):
+    def updateUser(self, user_id, username, password, location, name):
         with self.conn.cursor() as cur:
             cur.execute(
-                "UPDATE users SET username = %s, password = %s, location = %s "
+                "UPDATE users SET username = %s, password = %s, location = %s, name = %s "
                 "WHERE user_id = %s "
-                "RETURNING user_id, username, location",
-                (username, password, location, user_id),
+                "RETURNING user_id, username, location, name",
+                (username, password, location, name, user_id),
             )
             row = cur.fetchone()
         if row is None:
             return None
         self.conn.commit()
-        return {"user_id": row[0], "username": row[1], "location": row[2]}
+        return {"user_id": row[0], "username": row[1], "location": row[2], "name": row[3]}
 
     def deleteUser(self, user_id):
         with self.conn.cursor() as cur:

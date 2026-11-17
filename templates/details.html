@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel = "StyleSheet" href = "../static/styles.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
         <title>details</title>
     </head>
     <body class="details-page">
@@ -9,10 +9,10 @@
             <nav class="home-nav" aria-label="Main navigation">
                 <a class="home-brand" href="home.html">Record Shop</a>
                 <div class="home-nav-links">
-                    <a href="home.html" aria-current="page">Albums</a>
+                    <a href="{{ url_for('shopping_cart_ui.user_home') }}" aria-current="page">Albums</a>
                 </div>
                 <div class = "home-nav-links">
-                    <a href ="dashboard.html">Dashboard</a>
+                    <a href ="/account/dashboard">Dashboard</a>
                 </div>
             </nav>
         </header>
@@ -22,12 +22,12 @@
                 <!--the album cover and name go on this line-->
                 <div style = "display:flex">
                     <div class = "album">
-                        <img src = "https://m.media-amazon.com/images/I/51cyOjw5duL._AC_UL450_SY450_QL70_.jpg">
-                        <p style = "padding:20px">price: 18.99</p>
+                        <img src = "{{listing.image}}">
+                        <p style = "padding:20px">price: {{listing.price}}</p>
                     </div>
                     <div>
                         <h1>
-                            Title: illmatic
+                            Title: {{listing.title}}
                         </h1>
                     </div>
                 </div>
@@ -36,7 +36,7 @@
                     illmatic is the freshman album of legendary rapper nas.
                 </div>
                 <div>
-                    <p> providedby: </p>
+                    <p> provided by: {{provider.name}}</p>
                 </div>
                 <!--checkout the album here-->
                 <div class="checkout-bar">

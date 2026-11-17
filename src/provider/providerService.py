@@ -22,3 +22,6 @@ class providerService:
     
     def getProviders(self):
         return self.providerRepository.getProviders()
+
+    def authenticateProvider(self, username, password):
+        return self.providerRepository.getProviderByCredentials(username, password)

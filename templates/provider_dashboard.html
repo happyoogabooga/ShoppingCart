@@ -1,0 +1,59 @@
+<html>
+    <head>
+        <link rel = "StyleSheet" href = "../static/styles.css">
+    </head>
+    <body class = "dashboard.html">
+        <header class="home-header">
+            <nav class="home-nav" aria-label="Main navigation">
+                <a class="home-brand" href="home.html">Record Shop</a>
+                <div class="home-nav-links">
+                    <a href="home.html" aria-current="page">Albums</a>
+                </div>
+                <div class = "home-nav-links">
+                    <a href ="/account/provider_dashboard">Dashboard</a>
+                </div>
+            </nav>
+        </header>
+        <div class = "dashboard-main">
+            <div class = "banner">
+                <h1>Hello {{ provider.name }}</h1>
+            </div>
+            <!--split the bottom part of this page into, in progress orders, and orders-->
+            <div>
+                <h1>Creation Menu:</h1>
+                <a href="{{ url_for('shopping_cart_ui.create_album_listing') }}">
+                    make listing
+                </a>
+            </div>
+                <div class = "cart-view">
+                    <h1>albums:</h1>
+                    <div class="album-grid">
+                        {%for item in albumListing%}
+                        <article class = "album-card">
+                        <a class="album-cover-link" href="details.html" aria-label="View Illmatic details">
+                            <img
+                                class="album-cover"
+                                src="{{item.image}}"
+                                alt="{{item.title}}"
+                            >
+                        </a>
+                        <div class="album-card-content">
+                            <div>
+                                <h2 class="album-title">{{ item.title }}</h2>
+                                <p class="album-artist">{{ item.artist }}</p>
+                                <p class="album-price">${{ "%.2f"|format(item.price) }}</p>
+                                {% if item.provider_name %}
+                                <p class="album-seller">Sold by: {{ item.provider_name }}</p>
+                                {% endif %}
+                                <p class="album-description">{{ item.description }}</p>
+                                <p class = "album-Quantity"> {{ item.quantity}}</p>
+                            </div>
+                        </div>
+                        </article>
+                        {%endfor%}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
