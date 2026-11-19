@@ -5,8 +5,8 @@ class cartService:
     def __init__(self):
         self.cartRepository = cartRepository(get_db())
 
-    def makeCart(self, cart_id, sku, user_id):
-        return self.cartRepository.makeCart(cart_id, sku, user_id)
+    def makeCart(self, sku, user_id):
+        return self.cartRepository.makeCart(sku, user_id)
     
     def getCart(self):
         return self.cartRepository.getCart()
@@ -16,6 +16,9 @@ class cartService:
 
     def getCartByUserId(self, user_id):
         return self.cartRepository.getCartByUserId(user_id)
+
+    def getItemsByUserId(self, user_id):
+        return self.cartRepository.getItemsByUserId(user_id)
 
     def updateCart(self, cart_id, sku, user_id):
         return self.cartRepository.updateCart(cart_id, sku, user_id)

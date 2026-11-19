@@ -40,7 +40,11 @@
                 </div>
                 <!--checkout the album here-->
                 <div class="checkout-bar">
-                    <a href = "checkout.html">add to cart</a>
+                    <form action = "/album/cart/add/{{listing.sku}}" method = "POST">
+                        <button  class = "formSubmit" type = "submit">
+                            Add To Cart
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

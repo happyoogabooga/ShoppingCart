@@ -92,13 +92,13 @@ def dashboard():
         return redirect(url_for("shopping_cart_ui.login"))
     
     user = UserService().getUserById(user_id)
-    cart_items = CartService().getCartByUserId(user_id)
+    cart_item = CartService().getItemsByUserId(user_id)
     checkout_items = CheckoutService().getCheckoutsByUserId(user_id)
-
+    print(CartService().getItemsByUserId(user_id))
     return render_template(
         "dashboard.html",
         user=user,
-        cart_items=cart_items,
+        cart_item=cart_item,
         checkout_items=checkout_items
     )
 
@@ -177,6 +177,9 @@ def remove_from_cart(cart_id):
 
 @ui_blueprint.route("/user/home", methods = ["GET", "POST"])
 def user_home():
+    if "user_id" not in session:
+        return redirect(url_for("shopping_cart_ui.login"))
+    
     albumListings = AlbumListingsService().getAlbumListings()
     if request.method == "GET":
         return render_template("home.html", album_listings = albumListings)
@@ -186,7 +189,8 @@ def user_home():
 @ui_blueprint.route("/album/details/<int:sku>", methods = ["GET", "POST"])
 def album_details(sku):
     user_id = session.get("user_id")
-
+    if user_id not in session:
+        redirect(url_for("shopping_cart_ui.login"))
     listing = AlbumListingsService().getAlbumListingBysku(sku)
     if listing is None:
         return "listing not found"
@@ -197,3 +201,16 @@ def album_details(sku):
         provider = provider
     )
 
+@ui_blueprint.route("/album/cart/add/<int:sku>", methods = ["GET", "POST"])
+def addToCart(sku):
+    user_id = session.get("user_id")
+    if "user_id" not in session:
+        return redirect(url_for("shopping_cart_ui.login"))
+
+    listing = AlbumListingsService().getAlbumListingBysku(sku)
+
+    if listing is None:
+        return "listing is not found"
+
+    CartService().makeCart(sku, user_id)
+    return redirect(url_for("shopping_cart_ui.album_details", sku=sku))
