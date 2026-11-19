@@ -4,7 +4,7 @@ from .cartService import cartService as CartService
 
 
 class CartController:
-    blueprint = Blueprint("carts", __name__, url_prefix="/api/carts")
+    blueprint = Blueprint("cart", __name__, url_prefix="/api/cart")
 
     def __init__(self):
         self.blueprint = type(self).blueprint
@@ -34,16 +34,15 @@ class CartController:
     def post_cart():
         data = request.get_json()
         if not isinstance(data, dict):
-            return jsonify(error="Exepected a JSON obeject"), 400
+            return jsonify(error="Expected a JSON object"), 400
 
-        cart_id = data.get("cart_id")
         sku = data.get("sku")
         user_id = data.get("user_id")
 
-        if cart_id is None or sku is None or user_id is None:
-            return jsonify(error="cart_id, sku, and user_id required"), 400
+        if sku is None or user_id is None:
+            return jsonify(error="sku and user_id are required"), 400
 
-        cart = CartService().makeCart(cart_id, sku, user_id)
+        cart = CartService().makeCart(sku, user_id)
         return jsonify(cart), 201
 
     @staticmethod

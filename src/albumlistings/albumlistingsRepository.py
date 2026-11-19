@@ -86,9 +86,13 @@ class albumlistingsRepository:
             "price": row[3],
             "quantity": row[4],
         }
-
+    #I need to make sure that this deletion is consistent throughtout the database
     def deleteAlbumListing(self, sku):
         with self.conn.cursor() as cur:
+            cur.execute(
+                "DELETE FROM cart WHERE sku = %s",
+                (sku,),
+            )
             cur.execute(
                 "DELETE FROM albumlistings WHERE sku = %s "
                 "RETURNING sku, album_id, provider_id, price, quantity",

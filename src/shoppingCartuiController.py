@@ -167,6 +167,30 @@ def create_album_listing():
     )
     return redirect(url_for("shopping_cart_ui.provider_dashboard"))
 
+@ui_blueprint.route("/provider/edit_album_listing/<int:sku>", methods=["GET", "POST"])
+def edit_album_listing(sku):
+    if "provider_id" not in session:
+        return redirect(url_for("shopping_cart_ui.login"))
+
+    oldlisting = AlbumListingsService().getAlbumListingBysku(sku)
+
+    if request.method == "GET":
+        return render_template("edit_album_listing.html", listing = oldlisting)
+    newPrice = Decimal(request.form.get("price_text", "").strip())
+    newQuantity = request.form.get("quantity", type = int)
+
+    AlbumListingsService().updateAlbumListing(sku, oldlisting.get("album_id"), oldlisting.get("provider_id"), newPrice, newQuantity)
+
+    return redirect(url_for("shopping_cart_ui.provider_dashboard"))
+
+@ui_blueprint.get("/provider/delete_album/<int:sku>")
+def remove_from_listings(sku):
+    if "provider_id" not in session:
+        return redirect(url_for("shopping_cart_ui.provider_dashboard"))
+
+    AlbumListingsService().deleteAlbumListing(sku)
+    return redirect(url_for("shopping_cart_ui.provider_dashboard"))
+
 @ui_blueprint.get("/cart/remove/<int:cart_id>")
 def remove_from_cart(cart_id):
     if "user_id" not in session:
