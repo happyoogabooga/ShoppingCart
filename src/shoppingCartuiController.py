@@ -182,7 +182,7 @@ def edit_album_listing(sku):
     AlbumListingsService().updateAlbumListing(sku, oldlisting.get("album_id"), oldlisting.get("provider_id"), newPrice, newQuantity)
 
     return redirect(url_for("shopping_cart_ui.provider_dashboard"))
-
+#note, it may be a good idea to delete based on the quantity
 @ui_blueprint.get("/provider/delete_album/<int:sku>")
 def remove_from_listings(sku):
     if "provider_id" not in session:
