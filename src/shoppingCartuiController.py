@@ -2,6 +2,8 @@ from decimal import Decimal, InvalidOperation
 
 from flask import (
     Blueprint,
+    abort,
+    flash,
     redirect,
     render_template,
     request,
@@ -10,12 +12,32 @@ from flask import (
 )
 
 from .user.userService import userService as UserService
-from .cart.cartService import cartService as CartService
-from .checkout.checkoutService import checkoutService as CheckoutService
 from .provider.providerService import providerService as ProviderService
 from .album.albumService import AlbumService as AlbumService
 from .albumlistings.albumlistingsSerivce import albumlistingsService as AlbumListingsService
+from .cartitems.cartitemsService import cartitemsService as CartItemsService
+from .carts.cartsService import cartsService as CartsService
 ui_blueprint = Blueprint("shopping_cart_ui", __name__)
+
+
+def _get_album_listing(sku):
+    return next(
+        (
+            listing
+            for listing in AlbumListingsService().getAlbumListings()
+            if listing["sku"] == sku
+        ),
+        None,
+    )
+
+
+@ui_blueprint.get("/")
+def index():
+    if "user_id" in session:
+        return redirect(url_for("shopping_cart_ui.user_home"))
+    if "provider_id" in session:
+        return redirect(url_for("shopping_cart_ui.provider_dashboard"))
+    return redirect(url_for("shopping_cart_ui.login"))
 
 
 @ui_blueprint.route("/account/login", methods=["GET", "POST"])
@@ -47,8 +69,6 @@ def login():
             return render_template("login.html", error="Invalid username or password."), 401
         session["provider_id"] = provider["provider_id"]
         return redirect(url_for("shopping_cart_ui.provider_dashboard"))
-
-
 @ui_blueprint.route("/account/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "GET":
@@ -92,14 +112,20 @@ def dashboard():
         return redirect(url_for("shopping_cart_ui.login"))
     
     user = UserService().getUserById(user_id)
-    cart_item = CartService().getItemsByUserId(user_id)
-    checkout_items = CheckoutService().getCheckoutsByUserId(user_id)
-    print(CartService().getItemsByUserId(user_id))
+    if user is None:
+        session.pop("user_id", None)
+        return redirect(url_for("shopping_cart_ui.login"))
+    user_cart = CartsService().getCartsByUserId(user_id)
+    cart_item = []
+    if user_cart is not None:
+        for item in CartItemsService().getCartItemsByCartsId(user_cart["carts_id"]):
+            listing = _get_album_listing(item["sku"])
+            if listing is not None:
+                cart_item.append({**listing, "cartitem_id": item["cartitem_id"]})
     return render_template(
         "dashboard.html",
         user=user,
         cart_item=cart_item,
-        checkout_items=checkout_items
     )
 
 @ui_blueprint.get("/account/provider_dashboard")
@@ -175,9 +201,9 @@ def edit_album_listing(sku):
     oldlisting = AlbumListingsService().getAlbumListingBysku(sku)
 
     if request.method == "GET":
-        return render_template("edit_album_listing.html", listing = oldlisting)
+        return render_template("edit_album_listing.html", listing=oldlisting)
     newPrice = Decimal(request.form.get("price_text", "").strip())
-    newQuantity = request.form.get("quantity", type = int)
+    newQuantity = request.form.get("quantity", type=int)
 
     AlbumListingsService().updateAlbumListing(sku, oldlisting.get("album_id"), oldlisting.get("provider_id"), newPrice, newQuantity)
 
@@ -191,50 +217,66 @@ def remove_from_listings(sku):
     AlbumListingsService().deleteAlbumListing(sku)
     return redirect(url_for("shopping_cart_ui.provider_dashboard"))
 
-@ui_blueprint.get("/cart/remove/<int:cart_id>")
-def remove_from_cart(cart_id):
+@ui_blueprint.post("/cart/remove/<int:cartitem_id>")
+def remove_from_cart(cartitem_id):
     if "user_id" not in session:
         return redirect(url_for("shopping_cart_ui.login"))
 
-    CartService().removeCart(cart_id)
+    user_cart = CartsService().getCartsByUserId(session["user_id"])
+    if user_cart is None:
+        abort(404)
+    cart_items = CartItemsService().getCartItemsByCartsId(user_cart["carts_id"])
+    if not any(item["cartitem_id"] == cartitem_id for item in cart_items):
+        abort(404)
+    CartItemsService().removeCartItem(cartitem_id)
     return redirect(url_for("shopping_cart_ui.dashboard"))
 
-@ui_blueprint.route("/user/home", methods = ["GET", "POST"])
+@ui_blueprint.get("/user/home")
 def user_home():
     if "user_id" not in session:
         return redirect(url_for("shopping_cart_ui.login"))
     
-    albumListings = AlbumListingsService().getAlbumListings()
-    if request.method == "GET":
-        return render_template("home.html", album_listings = albumListings)
-    
-    user_id = session.get("user_id")
+    album_listings = AlbumListingsService().getAlbumListings()
+    query = request.args.get("q", "").strip()
+    if query:
+        query_lower = query.casefold()
+        album_listings = [
+            listing for listing in album_listings
+            if query_lower in listing["title"].casefold()
+        ]
+    return render_template(
+        "home.html",
+        album_listings=album_listings,
+        search_query=query,
+    )
 
-@ui_blueprint.route("/album/details/<int:sku>", methods = ["GET", "POST"])
+@ui_blueprint.get("/album/details/<int:sku>")
 def album_details(sku):
-    user_id = session.get("user_id")
-    if user_id not in session:
-        redirect(url_for("shopping_cart_ui.login"))
-    listing = AlbumListingsService().getAlbumListingBysku(sku)
+    if "user_id" not in session:
+        return redirect(url_for("shopping_cart_ui.login"))
+    listing = _get_album_listing(sku)
     if listing is None:
-        return "listing not found"
+        abort(404)
     provider = ProviderService().getProviderById(listing["provider_id"])
     return render_template(
         "details.html",
         listing=listing,
-        provider = provider
+        provider=provider,
     )
 
-@ui_blueprint.route("/album/cart/add/<int:sku>", methods = ["GET", "POST"])
-def addToCart(sku):
-    user_id = session.get("user_id")
+@ui_blueprint.post("/album/cart/add/<int:sku>")
+def add_to_cart(sku):
     if "user_id" not in session:
         return redirect(url_for("shopping_cart_ui.login"))
 
-    listing = AlbumListingsService().getAlbumListingBysku(sku)
-
+    listing = _get_album_listing(sku)
     if listing is None:
-        return "listing is not found"
+        abort(404)
+    if listing["quantity"] < 1:
+        flash("This album is currently out of stock.", "error")
+        return redirect(url_for("shopping_cart_ui.album_details", sku=sku))
 
-    CartService().makeCart(sku, user_id)
+    user_cart = CartsService().makeCarts(session["user_id"])
+    CartItemsService().makeCartItem(user_cart["carts_id"], sku)
+    flash("Album added to your cart.", "success")
     return redirect(url_for("shopping_cart_ui.album_details", sku=sku))

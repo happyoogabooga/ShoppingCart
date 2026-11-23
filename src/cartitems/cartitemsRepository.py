@@ -1,15 +1,15 @@
 class cartitemsRepository:
-    def __item__(self, conn):
+    def __init__(self, conn):
         self.conn = conn
 
     def getCartItems(self):
         with self.conn.cursor() as cur:
             cur.execute(
-                "SELECT * FROM cartitems"
+                "SELECT cartitem_id, carts_id, sku FROM cartitems"
             )
             rows = cur.fetchall()
         return[
-            {"cartitems_id": row[0],
+            {"cartitem_id": row[0],
              "carts_id": row[1],
              "sku": row[2]}
              for row in rows
@@ -18,14 +18,13 @@ class cartitemsRepository:
     def getCartItemsByCartsId(self, carts_id):
         with self.conn.cursor() as cur:
             cur.execute(
-                "SELECT * FROM cartitems"
-                "WHERE carts_id = %s"(carts_id),
+                "SELECT cartitem_id, carts_id, sku FROM cartitems "
+                "WHERE carts_id = %s",
+                (carts_id,),
             )
             rows = cur.fetchall()
-        if rows is None:
-            return None
         return[
-            {"cartitems_id": row[0],
+            {"cartitem_id": row[0],
              "carts_id": row[1],
              "sku": row[2]}
              for row in rows
@@ -34,23 +33,25 @@ class cartitemsRepository:
     def getCartItemsByCartItemId(self, cartitem_id):
         with self.conn.cursor() as cur:
             cur.execute(
-                "SELECT * FROM cartitems"
-                "WHERE cartitem_id = %s"(cartitem_id),
+                "SELECT cartitem_id, carts_id, sku FROM cartitems "
+                "WHERE cartitem_id = %s",
+                (cartitem_id,),
             )
-            row = cur.fetchall()
+            row = cur.fetchone()
         if row is None:
             return None
-        return{"cartitems_id": row[0],
-               "cart_id": row[1],
+        return{"cartitem_id": row[0],
+               "carts_id": row[1],
                "sku":row[2]
              }
 
     def makeCartItem(self, carts_id, sku):
         with self.conn.cursor() as cur:
             cur.execute(
-                "INSERT INTO cartitems (carts_id, sku)"
-                "VALUES(%s, %s)"
-                "RETURNING (cartitem_id, carts_id, sku)", (carts_id, sku)
+                "INSERT INTO cartitems (carts_id, sku) "
+                "VALUES (%s, %s) "
+                "RETURNING cartitem_id, carts_id, sku",
+                (carts_id, sku),
             )
             row = cur.fetchone()
         self.conn.commit()
@@ -65,9 +66,10 @@ class cartitemsRepository:
     def removeCartItem(self, cartitem_id):
         with self.conn.cursor() as cur:
             cur.execute(
-                "DELETE FROM cartitems"
-                "WHERE cartitem_id = %s"
-                "RETURNING (cartitem_id, carts_id, sku)", (cartitem_id)
+                "DELETE FROM cartitems "
+                "WHERE cartitem_id = %s "
+                "RETURNING cartitem_id, carts_id, sku",
+                (cartitem_id,),
             )
             row = cur.fetchone()
         self.conn.commit()
@@ -78,12 +80,14 @@ class cartitemsRepository:
             "carts_id": row[1],
             "sku": row[2]
         }
+
     def removeCartItemsByCartsId(self, carts_id):
         with self.conn.cursor() as cur:
             cur.execute(
-                "DELETE FROM cartitems"
-                "WHERE carts_id = %s"
-                "RETURNING (cartitems_id, carts_id, sku)", (carts_id)
+                "DELETE FROM cartitems "
+                "WHERE carts_id = %s "
+                "RETURNING cartitem_id, carts_id, sku",
+                (carts_id,),
             )
             rows = cur.fetchall()
         self.conn.commit()

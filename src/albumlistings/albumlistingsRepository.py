@@ -90,7 +90,7 @@ class albumlistingsRepository:
     def deleteAlbumListing(self, sku):
         with self.conn.cursor() as cur:
             cur.execute(
-                "DELETE FROM cart WHERE sku = %s",
+                "DELETE FROM cartitems WHERE sku = %s",
                 (sku,),
             )
             cur.execute(

@@ -4,17 +4,15 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Albums | Shopping Cart</title>
-        <link rel="stylesheet" href="../static/styles.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     </head>
     <body class="home-page">
         <header class="home-header">
             <nav class="home-nav">
                 <a class="home-brand" href="{{ url_for('shopping_cart_ui.user_home') }}">Record Shop</a>
                 <div class="home-nav-links">
-                    <a href="{{ url_for('shopping_cart_ui.user_home') }}">Albums</a>
-                </div>
-                <div class = "home-nav-links">
-                    <a href  = "/account/dashboard">Dashboard</a>
+                    <a href="{{ url_for('shopping_cart_ui.user_home') }}" aria-current="page">Albums</a>
+                    <a href="{{ url_for('shopping_cart_ui.dashboard') }}">Dashboard</a>
                 </div>
             </nav>
         </header>
@@ -28,17 +26,27 @@
                     </div>
                     <div class="album-search">
                         <label class="visually-hidden" for="album-search">Search albums by title</label>
-                        <input
-                            id="album-search"
-                            type="search"
-                            name="title"
-                            placeholder="Search albums by title"
-                        >
+                        <form action="{{ url_for('shopping_cart_ui.user_home') }}" method="get">
+                            <input
+                                id="album-search"
+                                type="search"
+                                name="q"
+                                value="{{ search_query }}"
+                                placeholder="Search albums by title"
+                            >
+                            <button class="album-card-link" type="submit">Search</button>
+                        </form>
                     </div>
                 </div>
 
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% for category, message in messages %}
+                    <p class="notice notice-{{ category }}" role="status">{{ message }}</p>
+                    {% endfor %}
+                {% endwith %}
+
                 <div class="album-grid">
-                    {%for item in album_listings%}
+                    {% for item in album_listings %}
                     <article class="album-card">
                         <a class="album-cover-link" href="{{ url_for('shopping_cart_ui.album_details', sku=item.sku) }}" aria-label="View {{ item.title }} details">
                             <img
@@ -54,17 +62,24 @@
                                 <p class="album-description">
                                     {{item.description}}
                                 </p>
-                                <p class = "album-description">{{item.provider_id}}</p>
+                                <p class="album-price">${{ "%.2f"|format(item.price) }}</p>
+                                {% if item.quantity > 0 %}
+                                <p class="album-description">In stock</p>
+                                {% else %}
+                                <p class="album-description">Out of stock</p>
+                                {% endif %}
                             </div>
                             <a class="album-card-link" href="{{ url_for('shopping_cart_ui.album_details', sku=item.sku) }}">View details</a>
                         </div>
                     </article>
+                    {% else %}
+                    <p>No albums match your search.</p>
                     {% endfor %}
                 </div>
             </div>
 
             <footer class="home-footer" id="about">
-                <p>albums!</p>
+                <p>Find records from independent sellers.</p>
             </footer>
         </div>
     </body>

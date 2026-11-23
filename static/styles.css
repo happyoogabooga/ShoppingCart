@@ -352,7 +352,7 @@ a, a:visited, a:hover, a:active {
 }
 .cart-container{
     display:grid;
-    grid-template-columns: 50% 50%;
+    grid-template-columns: minmax(0, 1fr);
     margin: 5px;
     gap:16px;
 }

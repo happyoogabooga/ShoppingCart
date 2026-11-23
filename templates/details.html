@@ -7,12 +7,12 @@
     <body class="details-page">
         <header class="home-header">
             <nav class="home-nav" aria-label="Main navigation">
-                <a class="home-brand" href="home.html">Record Shop</a>
+                <a class="home-brand" href="{{ url_for('shopping_cart_ui.user_home') }}">Record Shop</a>
                 <div class="home-nav-links">
                     <a href="{{ url_for('shopping_cart_ui.user_home') }}" aria-current="page">Albums</a>
                 </div>
-                <div class = "home-nav-links">
-                    <a href ="/account/dashboard">Dashboard</a>
+                <div class="home-nav-links">
+                    <a href="{{ url_for('shopping_cart_ui.dashboard') }}">Dashboard</a>
                 </div>
             </nav>
         </header>
@@ -22,27 +22,32 @@
                 <!--the album cover and name go on this line-->
                 <div style = "display:flex">
                     <div class = "album">
-                        <img src = "{{listing.image}}">
-                        <p style = "padding:20px">price: {{listing.price}}</p>
+                        <img src="{{ listing.image }}" alt="{{ listing.title }} album cover">
+                        <p style="padding:20px">${{ "%.2f"|format(listing.price) }}</p>
                     </div>
                     <div>
-                        <h1>
-                            Title: {{listing.title}}
-                        </h1>
+                        <h1>{{ listing.title }}</h1>
+                        <p>{{ listing.artist }}</p>
                     </div>
                 </div>
                 <!--description of the album goes here-->
                 <div class = "albumDetails">
-                    illmatic is the freshman album of legendary rapper nas.
+                    {{ listing.description }}
                 </div>
                 <div>
-                    <p> provided by: {{provider.name}}</p>
+                    <p>Provided by: {{ provider.name if provider else "Record Shop seller" }}</p>
+                    <p>{{ listing.quantity }} in stock</p>
                 </div>
                 <!--checkout the album here-->
                 <div class="checkout-bar">
-                    <form action = "/album/cart/add/{{listing.sku}}" method = "POST">
-                        <button  class = "formSubmit" type = "submit">
-                            Add To Cart
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% for category, message in messages %}
+                        <p class="notice notice-{{ category }}" role="status">{{ message }}</p>
+                        {% endfor %}
+                    {% endwith %}
+                    <form action="{{ url_for('shopping_cart_ui.add_to_cart', sku=listing.sku) }}" method="post">
+                        <button class="formSubmit" type="submit" {% if listing.quantity < 1 %}disabled{% endif %}>
+                            {% if listing.quantity < 1 %}Out of stock{% else %}Add to cart{% endif %}
                         </button>
                     </form>
                 </div>

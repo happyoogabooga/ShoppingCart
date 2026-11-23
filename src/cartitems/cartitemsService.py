@@ -11,7 +11,7 @@ class cartitemsService:
     def getCartItemsByCartsId(self, carts_id):
         return self.cartitemsRepository.getCartItemsByCartsId(carts_id)
 
-    def getCartItemsBycartItemId(self, cartitem_id):
+    def getCartItemsByCartItemId(self, cartitem_id):
         return self.cartitemsRepository.getCartItemsByCartItemId(cartitem_id)
 
     def makeCartItem(self, carts_id, sku):
