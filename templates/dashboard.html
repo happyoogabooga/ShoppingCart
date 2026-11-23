@@ -48,12 +48,16 @@
                                 </form>
                             </div>
                         </article>
-                    {% else %}
+                        {% else %}
                         <p>Your cart is empty.</p>
-                    {% endfor %}
+                        {% endfor %}
                     </div>
                 </div>
-                
+                <div>
+                    <form method="post">
+                        <button class="remove-item" type="submit">Checkout Cart</button>
+                    </form>
+                </div>
             </div>
         </div>
     </body>

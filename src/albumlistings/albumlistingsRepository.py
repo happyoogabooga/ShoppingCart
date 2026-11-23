@@ -130,3 +130,15 @@ class albumlistingsRepository:
             "price": row[3],
             "quantity": row[4],
         }
+
+    def updateQuantity(self, sku, newQuantity):
+        with self.conn.cursor() as cur:
+            cur.execute(
+                "UPDATE albumlistings"
+                "set quantity = %s"
+                "WHERE sku = %s", (newQuantity, sku)
+            )
+            row = cur.fetchone()
+        if row is None:
+            return None
+        return

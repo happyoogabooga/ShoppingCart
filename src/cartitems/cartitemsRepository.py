@@ -1,3 +1,4 @@
+from ..albumlistings.albumlistingsSerivce import albumlistingsService
 class cartitemsRepository:
     def __init__(self, conn):
         self.conn = conn
@@ -53,10 +54,20 @@ class cartitemsRepository:
                 "RETURNING cartitem_id, carts_id, sku",
                 (carts_id, sku),
             )
+            #thinking of what I need to do, it would be valuable to get the quantity of the album listings first, and then do this update, here goes
             row = cur.fetchone()
+            #count the items in cartItem with the same sku
+            cur.execute(
+                "SELECT count(sku)"
+                "FROM cartitems"
+                "WHERE sku = %s",(sku),
+            )
+            currentquantity = cur.fetchone()
+
         self.conn.commit()
         if row is None:
             return None
+         currentquantity[0]
         return {
             "cartitem_id": row[0],
             "carts_id": row[1],

@@ -278,5 +278,4 @@ def add_to_cart(sku):
 
     user_cart = CartsService().makeCarts(session["user_id"])
     CartItemsService().makeCartItem(user_cart["carts_id"], sku)
-    flash("Album added to your cart.", "success")
     return redirect(url_for("shopping_cart_ui.album_details", sku=sku))
