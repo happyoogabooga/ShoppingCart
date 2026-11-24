@@ -4,22 +4,20 @@ class checkoutService:
     def __init__(self):
         self.checkoutRepository = checkoutRepository(get_db())
 
-    def makeCheckout(self, user_id, total_amount, cart_id):
-        return self.checkoutRepository.makeCheckout(user_id, total_amount, cart_id)
-
-    def getCheckoutByCartId(self, cart_id):
-        return self.checkoutRepository.getCheckoutByCartId(cart_id)
+    def getCheckouts(self):
+        return self.checkoutRepository.getCheckouts()
 
     def getCheckoutsByUserId(self, user_id):
         return self.checkoutRepository.getCheckoutsByUserId(user_id)
 
-    def getCheckoutById(self, order_number):
-        return self.checkoutRepository.getCheckoutById(order_number)
+    def getCheckoutsByProviderId(self, provider_id):
+        return self.checkoutRepository.getCheckoutsByProviderId(provider_id)
 
-    def updateCheckout(self, order_number, user_id, total_amount, cart_id):
-        return self.checkoutRepository.updateCheckout(
-            order_number, user_id, total_amount, cart_id
+    def getCheckoutByCheckoutId(self, checkout_id):
+        return self.checkoutRepository.getCheckoutByCheckoutId(checkout_id)
+
+    def makeCheckout(self, user_id, shipping_address):
+        return self.checkoutRepository.makeCheckoutFromUser(
+            user_id,
+            shipping_address,
         )
-
-    def deleteCheckout(self, order_number):
-        return self.checkoutRepository.deleteCheckout(order_number)

@@ -9,6 +9,7 @@
                 <div class="home-nav-links">
                     <a href="{{ url_for('shopping_cart_ui.user_home') }}">Albums</a>
                     <a href="{{ url_for('shopping_cart_ui.dashboard') }}" aria-current="page">Dashboard</a>
+                    <a href="{{ url_for('shopping_cart_ui.orders') }}">Orders</a>
                 </div>
             </nav>
         </header>
@@ -54,9 +55,9 @@
                     </div>
                 </div>
                 <div>
-                    <form method="post">
-                        <button class="remove-item" type="submit">Checkout Cart</button>
-                    </form>
+                    {% if cart_item %}
+                    <a class="album-card-link" href="{{ url_for('shopping_cart_ui.checkout') }}">Checkout</a>
+                    {% endif %}
                 </div>
             </div>
         </div>

@@ -3,21 +3,40 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Albums | Shopping Cart</title>
+        <title>Checkout | Record Shop</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     </head>
-    <body class = "home-page">
+    <body class="home-page">
         <header class="home-header">
-            <nav class="home-nav">
+            <nav class="home-nav" aria-label="Main navigation">
                 <a class="home-brand" href="{{ url_for('shopping_cart_ui.user_home') }}">Record Shop</a>
                 <div class="home-nav-links">
-                    <a href="{{ url_for('shopping_cart_ui.user_home') }}" aria-current="page">Albums</a>
+                    <a href="{{ url_for('shopping_cart_ui.user_home') }}">Albums</a>
                     <a href="{{ url_for('shopping_cart_ui.dashboard') }}">Dashboard</a>
+                    <a href="{{ url_for('shopping_cart_ui.orders') }}">Orders</a>
                 </div>
             </nav>
         </header>
-        <div>
-            
-        </div>
+        <main class="checkout-main">
+            <h1>Checkout</h1>
+            {% if error %}
+            <p class="notice notice-error" role="alert">{{ error }}</p>
+            {% endif %}
+            <section class="checkout-summary" aria-labelledby="summary-heading">
+                <h2 id="summary-heading">Your order</h2>
+                <ul>
+                    {% for item in cart_items %}
+                    <li>{{ item.title }} — {{ item.artist }} · ${{ "%.2f"|format(item.price) }}</li>
+                    {% endfor %}
+                </ul>
+                <p><strong>Total: ${{ "%.2f"|format(cart_items|sum(attribute="price")) }}</strong></p>
+            </section>
+            <form class="checkout-form" action="{{ url_for('shopping_cart_ui.checkout') }}" method="post">
+                <h2>Shipping information</h2>
+                <label for="shipping_address">Shipping address</label>
+                <textarea id="shipping_address" name="shipping_address" maxlength="256" required>{{ shipping_address or '' }}</textarea>
+                <button class="album-card-link" type="submit">Place order</button>
+            </form>
+        </main>
     </body>
 </html>

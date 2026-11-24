@@ -12,6 +12,7 @@ from flask import (
 )
 
 from .user.userService import userService as UserService
+from .checkout.checkoutService import checkoutService as CheckoutService
 from .provider.providerService import providerService as ProviderService
 from .album.albumService import AlbumService as AlbumService
 from .albumlistings.albumlistingsSerivce import albumlistingsService as AlbumListingsService
@@ -29,6 +30,19 @@ def _get_album_listing(sku):
         ),
         None,
     )
+
+
+def _get_cart_items(user_id):
+    user_cart = CartsService().getCartsByUserId(user_id)
+    if user_cart is None:
+        return []
+
+    items = []
+    for item in CartItemsService().getCartItemsByCartsId(user_cart["carts_id"]):
+        listing = _get_album_listing(item["sku"])
+        if listing is not None:
+            items.append({**listing, "cartitem_id": item["cartitem_id"]})
+    return items
 
 
 @ui_blueprint.get("/")
@@ -115,18 +129,55 @@ def dashboard():
     if user is None:
         session.pop("user_id", None)
         return redirect(url_for("shopping_cart_ui.login"))
-    user_cart = CartsService().getCartsByUserId(user_id)
-    cart_item = []
-    if user_cart is not None:
-        for item in CartItemsService().getCartItemsByCartsId(user_cart["carts_id"]):
-            listing = _get_album_listing(item["sku"])
-            if listing is not None:
-                cart_item.append({**listing, "cartitem_id": item["cartitem_id"]})
     return render_template(
         "dashboard.html",
         user=user,
-        cart_item=cart_item,
+        cart_item=_get_cart_items(user_id),
     )
+
+
+@ui_blueprint.route("/checkout", methods=["GET", "POST"])
+def checkout():
+    user_id = session.get("user_id")
+    if not user_id:
+        return redirect(url_for("shopping_cart_ui.login"))
+
+    cart_items = _get_cart_items(user_id)
+    if not cart_items:
+        flash("Your cart is empty.", "error")
+        return redirect(url_for("shopping_cart_ui.dashboard"))
+
+    if request.method == "GET":
+        return render_template("checkout.html", cart_items=cart_items)
+
+    shipping_address = request.form.get("shipping_address", "").strip()
+    if not shipping_address or len(shipping_address) > 256:
+        return render_template(
+            "checkout.html",
+            cart_items=cart_items,
+            shipping_address=shipping_address,
+            error="Enter a shipping address (up to 256 characters).",
+        ), 400
+
+    order = CheckoutService().makeCheckout(user_id, shipping_address)
+    if order is None:
+        flash("Your cart is empty.", "error")
+        return redirect(url_for("shopping_cart_ui.dashboard"))
+
+    flash("Your order was placed.", "success")
+    return redirect(url_for("shopping_cart_ui.orders"))
+
+
+@ui_blueprint.get("/account/orders")
+def orders():
+    user_id = session.get("user_id")
+    if not user_id:
+        return redirect(url_for("shopping_cart_ui.login"))
+    return render_template(
+        "orders.html",
+        orders=CheckoutService().getCheckoutsByUserId(user_id),
+    )
+
 
 @ui_blueprint.get("/account/provider_dashboard")
 def provider_dashboard():
