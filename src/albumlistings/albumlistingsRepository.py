@@ -86,9 +86,13 @@ class albumlistingsRepository:
             "price": row[3],
             "quantity": row[4],
         }
-
+    #I need to make sure that this deletion is consistent throughtout the database
     def deleteAlbumListing(self, sku):
         with self.conn.cursor() as cur:
+            cur.execute(
+                "DELETE FROM cartitems WHERE sku = %s",
+                (sku,),
+            )
             cur.execute(
                 "DELETE FROM albumlistings WHERE sku = %s "
                 "RETURNING sku, album_id, provider_id, price, quantity",
@@ -126,3 +130,24 @@ class albumlistingsRepository:
             "price": row[3],
             "quantity": row[4],
         }
+
+    def updateQuantity(self, sku, newQuantity):
+        with self.conn.cursor() as cur:
+            cur.execute(
+                "UPDATE albumlistings "
+                "SET quantity = quantity - %s "
+                "WHERE sku = %s "
+                "RETURNING sku, album_id, provider_id, price, quantity ",(newQuantity, sku),
+            )
+            row = cur.fetchone()
+        if row is None:
+            return None
+        self.conn.commit()
+        return {
+                    "sku": row[0],
+                    "album_id": row[1],
+                    "provider_id": row[2],
+                    "price": row[3],
+                    "quantity": row[4],
+                }
+        

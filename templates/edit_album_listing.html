@@ -1,0 +1,33 @@
+<html>
+    <head>
+        <link rel = "StyleSheet" href = "../static/styles.css">
+    </head>
+    <body class = "dashboard.html">
+        <header class="home-header">
+            <nav class="home-nav" aria-label="Main navigation">
+                <a class="home-brand" href="home.html">Record Shop</a>
+                <div class="home-nav-links">
+                    <a href="home.html" aria-current="page">Albums</a>
+                </div>
+                <div class = "home-nav-links">
+                    <a href ="/account/provider_dashboard">Dashboard</a>
+                </div>
+            </nav>
+        </header>
+        <div class = "container">
+            <form action = "{{ url_for('shopping_cart_ui.edit_album_listing', sku=listing.sku) }}" method = "POST">
+                <div class = "formstyle">
+                    <label for = "price_text" >Price:</label>
+                    <input type = "number" id = "price_text" name = "price_text" step = "0.01" min = "0" required placeholder = "$20.00">
+                </div>
+                <div class = "formstyle">
+                    <label for = "quantity">Quantity:</label>
+                    <input type = "number" id = "quantity" name = "quantity" step = "1" min = 1 reqired placeholder = "4">
+                </div>
+                <div class = "formstyle">
+                    <input type = "submit" class = "formSubmit" value = "continue">
+                </div>
+            </form>
+        </div>
+    </body>
+</html>

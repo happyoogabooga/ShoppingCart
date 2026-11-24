@@ -32,14 +32,35 @@ CREATE TABLE cart(
 	foreign key(user_id) references users(user_id)
 );
 
-CREATE TABLE checkout (
+CREATE TABLE IF NOT EXISTS public.checkout (
     order_number SERIAL NOT NULL,
-    user_id INT NOT NULL,
-    total_amount DECIMAL(8,2),
-    cart_id Integer,
-    PRIMARY KEY (order_number),
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
-    FOREIGN KEY (cart_id) References cart(cart_id)
+    total_amount NUMERIC(8,2),
+    carts_id INTEGER,
+    CONSTRAINT checkout_pkey PRIMARY KEY (order_number),
+    CONSTRAINT checkout_carts_id_fkey FOREIGN KEY (carts_id)
+        REFERENCES public.carts (carts_id)
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+);
+
+ALTER TABLE public.checkout
+    ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ADD COLUMN IF NOT EXISTS shipping_name VARCHAR(128),
+    ADD COLUMN IF NOT EXISTS shipping_address VARCHAR(255),
+    ADD COLUMN IF NOT EXISTS shipping_address_line2 VARCHAR(255),
+    ADD COLUMN IF NOT EXISTS shipping_city VARCHAR(128),
+    ADD COLUMN IF NOT EXISTS shipping_region VARCHAR(128),
+    ADD COLUMN IF NOT EXISTS shipping_postal_code VARCHAR(32),
+    ADD COLUMN IF NOT EXISTS shipping_country VARCHAR(128);
+
+CREATE TABLE IF NOT EXISTS public.checkout_items (
+    order_item_id SERIAL PRIMARY KEY,
+    order_number INTEGER NOT NULL REFERENCES public.checkout(order_number) ON DELETE CASCADE,
+    sku INTEGER NOT NULL,
+    title VARCHAR(128) NOT NULL,
+    artist VARCHAR(128),
+    unit_price DECIMAL(10, 2) NOT NULL,
+    quantity INTEGER NOT NULL CHECK (quantity > 0)
 );
 
 CREATE TABLE AlbumListings(

@@ -1,16 +1,15 @@
 <html>
     <head>
-        <link rel = "StyleSheet" href = "../static/styles.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     </head>
-    <body class = "dashboard.html">
+    <body class="home-page">
         <header class="home-header">
             <nav class="home-nav" aria-label="Main navigation">
-                <a class="home-brand" href="home.html">Record Shop</a>
+                <a class="home-brand" href="{{ url_for('shopping_cart_ui.user_home') }}">Record Shop</a>
                 <div class="home-nav-links">
-                    <a href="/user/home" aria-current="page">Albums</a>
-                </div>
-                <div class = "home-nav-links">
-                    <a href ="/account/dashboard">Dashboard</a>
+                    <a href="{{ url_for('shopping_cart_ui.user_home') }}">Albums</a>
+                    <a href="{{ url_for('shopping_cart_ui.dashboard') }}" aria-current="page">Dashboard</a>
+                    <a href="{{ url_for('shopping_cart_ui.orders') }}">Orders</a>
                 </div>
             </nav>
         </header>
@@ -18,64 +17,47 @@
             <div class = "banner">
                 <h1>Hello {{ user.username }}</h1>
             </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                <p class="notice notice-{{ category }}" role="status">{{ message }}</p>
+                {% endfor %}
+            {% endwith %}
             <!--split the bottom part of this page into, in progress orders, and orders-->
             <div class = "cart-container">
                 <div class = "cart-view">
                     <h1>Cart:</h1>
                     <div class="album-grid">
-                    {%for item in cart_item%}
-                    <article class="album-card">
-                        <a class="album-cover-link" href="details.html" aria-label="View Illmatic details">
-                            <img
-                                class="album-cover"
-                                src="{{item.image}}"
-                                alt="{{item.title}}"
-                            >
-                        </a>
-                        <div class="album-card-content">
-                            <div>
-                                <h2 class="album-title">{{ item.title }}</h2>
-                                <p class="album-artist">{{ item.artist }}</p>
-                                <p class="album-price">${{ "%.2f"|format(item.price) }}</p>
-                                {% if item.provider_name %}
-                                <p class="album-seller">Sold by: {{ item.provider_name }}</p>
-                                {% endif %}
-                                <p class="album-description">{{ item.description }}</p>
+                    {% for item in cart_item %}
+                        <article class="album-card">
+                            <a class="album-cover-link" href="{{ url_for('shopping_cart_ui.album_details', sku=item.sku) }}" aria-label="View {{ item.title }} details">
+                                <img
+                                    class="album-cover"
+                                    src="{{ item.image }}"
+                                    alt="{{ item.title }} album cover"
+                                >
+                            </a>
+                            <div class="album-card-content">
+                                <div>
+                                    <h2 class="album-title">{{ item.title }}</h2>
+                                    <p class="album-artist">{{ item.artist }}</p>
+                                    <p class="album-price">${{ "%.2f"|format(item.price) }}</p>
+                                    <p class="album-description">{{ item.description }}</p>
+                                </div>
+                                <a class="album-card-link" href="{{ url_for('shopping_cart_ui.album_details', sku=item.sku) }}">View details</a>
+                                <form action="{{ url_for('shopping_cart_ui.remove_from_cart', cartitem_id=item.cartitem_id) }}" method="post">
+                                    <button class="remove-item" type="submit">Remove item</button>
+                                </form>
                             </div>
-                            <a class="album-card-link" href="/album/{{ item.sku }}">View details</a>
-                            <a class="remove-item" href="{{ url_for('shopping_cart_ui.remove_from_cart', cart_id=item.cart_id) }}">Remove Item</a>
-                        </div>
-                    </article>
+                        </article>
+                        {% else %}
+                        <p>Your cart is empty.</p>
+                        {% endfor %}
                     </div>
-                    {%else%}
-                    your cart is empty
-                    {%endfor%}
                 </div>
-                
-                <div class = "cart-view">
-                    <h1>Checkout-in-progress:</h1>
-                    <div class="album-grid">
-                    <article class="album-card">
-                        <a class="album-cover-link" href="details.html" aria-label="View Illmatic details">
-                            <img
-                                class="album-cover"
-                                src="https://m.media-amazon.com/images/I/51cyOjw5duL._AC_UL450_SY450_QL70_.jpg"
-                                alt="Illmatic album cover"
-                            >
-                        </a>
-                        <div class="album-card-content">
-                            <div>
-                                <h2 class="album-title">Illmatic</h2>
-                                <p class="album-artist">Nas</p>
-                                <p class="album-description">
-                                    The debut album from legendary rapper Nas.
-                                </p>
-                            </div>
-                            <p>Order Number:</p>
-                            <a class="album-card-link" href="details.html">View details</a>
-                        </div>
-                    </article>
-                    </div>
+                <div>
+                    {% if cart_item %}
+                    <a class="album-card-link" href="{{ url_for('shopping_cart_ui.checkout') }}">Checkout</a>
+                    {% endif %}
                 </div>
             </div>
         </div>

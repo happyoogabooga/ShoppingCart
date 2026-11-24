@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Your orders | Record Shop</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+    <body class="home-page">
+        <header class="home-header">
+            <nav class="home-nav" aria-label="Main navigation">
+                <a class="home-brand" href="{{ url_for('shopping_cart_ui.user_home') }}">Record Shop</a>
+                <div class="home-nav-links">
+                    <a href="{{ url_for('shopping_cart_ui.user_home') }}">Albums</a>
+                    <a href="{{ url_for('shopping_cart_ui.dashboard') }}">Dashboard</a>
+                    <a href="{{ url_for('shopping_cart_ui.orders') }}" aria-current="page">Orders</a>
+                </div>
+            </nav>
+        </header>
+        <main class="orders-main">
+            <h1>Your orders</h1>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                <p class="notice notice-{{ category }}" role="status">{{ message }}</p>
+                {% endfor %}
+            {% endwith %}
+            <div class="orders-list">
+                {% for order in orders %}
+                <article class="order-card">
+                    <header class="order-header">
+                        <h2>Order #{{ order.checkout_id }}</h2>
+                    </header>
+                    <h3>Items</h3>
+                    <ul>
+                        {% for item in order["items"] %}
+                        <li>{{ item.title }} · {{ item.quantity }} × ${{ "%.2f"|format(item.unit_price) }}</li>
+                        {% endfor %}
+                    </ul>
+                    <h3>Ship to</h3>
+                    <address>{{ order.shipping_address }}</address>
+                </article>
+                {% else %}
+                <p>You haven't placed any orders yet.</p>
+                {% endfor %}
+            </div>
+        </main>
+    </body>
+</html>
