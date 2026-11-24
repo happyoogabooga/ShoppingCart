@@ -134,11 +134,20 @@ class albumlistingsRepository:
     def updateQuantity(self, sku, newQuantity):
         with self.conn.cursor() as cur:
             cur.execute(
-                "UPDATE albumlistings"
-                "set quantity = %s"
-                "WHERE sku = %s", (newQuantity, sku)
+                "UPDATE albumlistings "
+                "SET quantity = quantity - %s "
+                "WHERE sku = %s "
+                "RETURNING sku, album_id, provider_id, price, quantity ",(newQuantity, sku),
             )
             row = cur.fetchone()
         if row is None:
             return None
-        return
+        self.conn.commit()
+        return {
+                    "sku": row[0],
+                    "album_id": row[1],
+                    "provider_id": row[2],
+                    "price": row[3],
+                    "quantity": row[4],
+                }
+        

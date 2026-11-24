@@ -277,5 +277,8 @@ def add_to_cart(sku):
         return redirect(url_for("shopping_cart_ui.album_details", sku=sku))
 
     user_cart = CartsService().makeCarts(session["user_id"])
-    CartItemsService().makeCartItem(user_cart["carts_id"], sku)
+    cart_item = CartItemsService().makeCartItem(user_cart["carts_id"], sku)
+    if cart_item is None:
+        flash("This album is no longer in stock.", "error")
+        return redirect(url_for("shopping_cart_ui.album_details", sku=sku))
     return redirect(url_for("shopping_cart_ui.album_details", sku=sku))

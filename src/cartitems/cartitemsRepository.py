@@ -1,4 +1,3 @@
-from ..albumlistings.albumlistingsSerivce import albumlistingsService
 class cartitemsRepository:
     def __init__(self, conn):
         self.conn = conn
@@ -49,25 +48,26 @@ class cartitemsRepository:
     def makeCartItem(self, carts_id, sku):
         with self.conn.cursor() as cur:
             cur.execute(
+                "UPDATE albumlistings "
+                "SET quantity = quantity - 1 "
+                "WHERE sku = %s AND quantity > 0 "
+                "RETURNING sku",
+                (sku,),
+            )
+            stock_row = cur.fetchone()
+            if stock_row is None:
+                return None
+
+            cur.execute(
                 "INSERT INTO cartitems (carts_id, sku) "
                 "VALUES (%s, %s) "
                 "RETURNING cartitem_id, carts_id, sku",
                 (carts_id, sku),
             )
-            #thinking of what I need to do, it would be valuable to get the quantity of the album listings first, and then do this update, here goes
             row = cur.fetchone()
-            #count the items in cartItem with the same sku
-            cur.execute(
-                "SELECT count(sku)"
-                "FROM cartitems"
-                "WHERE sku = %s",(sku),
-            )
-            currentquantity = cur.fetchone()
-
+            if row is None:
+                raise RuntimeError("Cart item insert did not return a row.")
         self.conn.commit()
-        if row is None:
-            return None
-         currentquantity[0]
         return {
             "cartitem_id": row[0],
             "carts_id": row[1],
@@ -83,9 +83,20 @@ class cartitemsRepository:
                 (cartitem_id,),
             )
             row = cur.fetchone()
-        self.conn.commit()
         if row is None:
             return None
+        with self.conn.cursor() as cur:
+            cur.execute(
+                "UPDATE albumlistings "
+                "SET quantity = quantity + 1 "
+                "WHERE sku = %s "
+                "RETURNING sku",
+                (row[2],),
+            )
+            stock_row = cur.fetchone()
+        if stock_row is None:
+            raise RuntimeError("Could not restore stock for the removed cart item.")
+        self.conn.commit()
         return {
             "cartitem_id": row[0],
             "carts_id": row[1],

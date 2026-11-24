@@ -26,4 +26,6 @@ class albumlistingsService:
         return self.albumRepository.updateAlbumListing(
             sku, album_id, provider_id, price, quantity
         )
-    
+
+    def updateQuantity(self, sku, newQuantity):
+        return self.albumRepository.updateQuantity(sku, newQuantity)
